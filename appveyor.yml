@@ -4,11 +4,11 @@ os: Visual Studio 2015
 
 install:
 - dnvm install -arch x64 1.0.0-rc1-update1
-- dnu restore --quiet ".\web\Gruppenfoto.Web"
+- dnu restore --quiet ".\web\src\Gruppenfoto.Web"
 
 build_script:
 - SET PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
-- CALL dnu publish ".\web\Gruppenfoto.Web" --out "%APPVEYOR_BUILD_FOLDER%\artifacts\publish" --configuration Release --no-source --runtime dnx-clr-win-x64.1.0.0-rc1-update1 --wwwroot-out "wwwroot" --quiet
+- CALL dnu publish ".\web\src\Gruppenfoto.Web" --out "%APPVEYOR_BUILD_FOLDER%\artifacts\publish" --configuration Release --no-source --runtime dnx-clr-win-x64.1.0.0-rc1-update1 --wwwroot-out "wwwroot" --quiet
 
 artifacts:
 - path: artifacts/publish

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Gruppenfoto.Web", "GruppenFoto.Web\Gruppenfoto.Web.xproj", "{A0E3F6A3-2A8C-4679-9FE5-669D73748064}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Gruppenfoto.Web", "src\GruppenFoto.Web\Gruppenfoto.Web.xproj", "{A0E3F6A3-2A8C-4679-9FE5-669D73748064}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5F8B81D1-FC38-4D3F-A376-4DB56A34899A}"
 	ProjectSection(SolutionItems) = preProject
