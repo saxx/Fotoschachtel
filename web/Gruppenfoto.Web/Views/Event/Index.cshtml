@@ -1,0 +1,101 @@
+﻿@model Gruppenfoto.Web.ViewModels.Event.IndexViewModel
+
+@if (Model == null)
+{
+    throw new Exception("Model is null");
+}
+
+<h1>
+    Event @Model.EventId
+
+    @if (!Model.Pictures.Any())
+    {
+        <small>
+            Es sind noch keine Fotos hinterlegt
+        </small>
+    }
+    else if (Model.Pictures.Count() == 1)
+    {
+        <small>
+            Es ist erst ein Foto hinterlegt
+        </small>
+    }
+    else
+    {
+        <small>
+            Es sind schon @Model.Pictures.Count() Fotos hinterlegt
+        </small>
+    }
+</h1>
+
+<form method="post" asp-controller="Event" asp-action="UploadPicture">
+    <div class="alert alert-danger" style="display: none;" id="upload-error-message">
+        Oje oje, beim Hochladen ist ein Fehler aufgetreten. Bitte versuche es mit einem anderen Bild noch einmal.
+    </div>
+
+    <span class="btn btn-primary fileinput-button">
+        <span>Foto auswählen</span>
+    </span>
+    <span>oder ziehe deine Fotos direkt auf diese Seite.</span>
+
+    <input id="file" type="file" name="file" multiple style="display: none;">
+
+    <div class="row" id="progress-container" style="display: none;">
+        <div class="form-group col-xs-12">
+            <div class="text-muted">Deine Bilder werden hochgeladen ... bitte habe einen Moment Geduld.</div>
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success"></div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<hr/>
+
+@foreach (var picture in Model.Pictures)
+{
+    <div class="thumbnail">
+        <img src="@Url.Action("DownloadPicture", "Event", new {eventId = Model.EventId, fileId = picture.FileId, size = 200})" title="@picture.CreationDateTime"/>
+    </div>
+}
+
+@section scripts {
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/jquery.fileupload.js"></script>
+    <script>
+        var progressContainer = $("#progress-container");
+        var uploadContainer = $("#upload-container");
+        var errorMessage = $("#upload-error-message");
+
+        var wasSuccessful = true;
+        $("#file").fileupload({
+            url: "@Url.Action("Create")",
+            dataType: "json",
+            start: function () {
+                uploadContainer.hide();
+                errorMessage.hide();
+                progressContainer.show();
+            },
+            stop: function () {
+                if (wasSuccessful) {
+                    window.location = "@Url.Action("Event", "Index", new { eventId = Model.EventId })";
+                } else {
+                    uploadContainer.show();
+                    progressContainer.hide();
+                    errorMessage.show();
+                }
+            },
+            done: function (e, data) {
+                wasSuccessful = wasSuccessful && data.result;
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                progressContainer.find(".progress-bar").css("width", progress + "%");
+            }
+        });
+
+        $(".fileinput-button").click(function () {
+            $("#file").click();
+        });
+    </script>
+}
