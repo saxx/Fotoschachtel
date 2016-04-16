@@ -25,6 +25,7 @@ namespace GruppenFoto.Web
 
         public void ConfigureServices([NotNull] IServiceCollection services)
         {
+            services.AddInstance(Configuration);
             services.AddHaufwerk("Gruppenfoto.Web", "http://haufwerk.sachsenhofer.com");
             services.AddTransient<IndexViewModel>();
             services.AddTransient<PictureStorage>();

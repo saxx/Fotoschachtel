@@ -16,7 +16,7 @@ namespace Gruppenfoto.Web
         [NotNull]
         private readonly string _rootPath;
 
-        public PictureStorage([NotNull] IApplicationEnvironment appEnv, [NotNull] IConfiguration configuration)
+        public PictureStorage([NotNull] IApplicationEnvironment appEnv, [NotNull] IConfigurationRoot configuration)
         {
             var pathInConfig = configuration.Get("PhotosRootPath", "");
             if (!string.IsNullOrWhiteSpace(pathInConfig))
