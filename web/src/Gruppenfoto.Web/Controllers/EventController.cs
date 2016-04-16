@@ -46,7 +46,7 @@ namespace GruppenFoto.Web.Controllers
         [HttpPost, Route("{eventId}/picture")]
         public async Task<IActionResult> UploadPicture([NotNull] string eventId, [CanBeNull] UploadPictureViewModel viewModel)
         {
-            if (viewModel == null || string.IsNullOrWhiteSpace(eventId))
+            if (viewModel == null)
             {
                 throw new Exception("ViewModel is null.");
             }
@@ -79,18 +79,6 @@ namespace GruppenFoto.Web.Controllers
                     }
                     throw new Exception("File too big.");
                 }
-
-                if (viewModel.FileBase64 != null)
-                {
-                    var bytes = Convert.FromBase64String(viewModel.FileBase64);
-                    if (bytes.Length < maxFileSize)
-                    {
-                        storage.Save(eventId, bytes);
-                        return Json(true);
-                    }
-                    throw new Exception("File too big.");
-                }
-
                 throw new Exception("No file specified.");
             }
 
