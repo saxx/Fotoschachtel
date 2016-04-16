@@ -48,7 +48,11 @@ namespace GruppenFoto.Web.Controllers
         {
             if (viewModel == null || string.IsNullOrWhiteSpace(eventId))
             {
-                return Json(false);
+                throw new Exception("ViewModel is null.");
+            }
+            if (string.IsNullOrWhiteSpace(eventId))
+            {
+                throw new Exception("No eventId specified.");
             }
 
             var storage = HttpContext?.ApplicationServices.GetRequiredService<PictureStorage>();
@@ -56,30 +60,41 @@ namespace GruppenFoto.Web.Controllers
             {
                 throw new Exception("Unable to resolve PictureStorage.");
             }
-            const int maxFileSize = 25*1024*1024;
+            const int maxFileSize = 25 * 1024 * 1024;
 
 
-            if (ModelState != null && ModelState.IsValid && viewModel.File != null && viewModel.File.Length > 0 && viewModel.File.Length < maxFileSize)
+            if (ModelState != null && ModelState.IsValid)
             {
-                using (var stream = new MemoryStream())
+                if (viewModel.File != null && viewModel.File.Length > 0)
                 {
-                    // ReSharper disable once PossibleNullReferenceException
-                    await viewModel.File.OpenReadStream().CopyToAsync(stream);
-                    storage.Save(eventId, stream.ToArray());
-                    return Json(true);
+                    if (viewModel.File.Length < maxFileSize)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            // ReSharper disable once PossibleNullReferenceException
+                            await viewModel.File.OpenReadStream().CopyToAsync(stream);
+                            storage.Save(eventId, stream.ToArray());
+                            return Json(true);
+                        }
+                    }
+                    throw new Exception("File too big.");
                 }
+
+                if (viewModel.FileBase64 != null)
+                {
+                    var bytes = Convert.FromBase64String(viewModel.FileBase64);
+                    if (bytes.Length < maxFileSize)
+                    {
+                        storage.Save(eventId, bytes);
+                        return Json(true);
+                    }
+                    throw new Exception("File too big.");
+                }
+
+                throw new Exception("No file specified.");
             }
 
-            if (ModelState != null && ModelState.IsValid && viewModel.FileBase64 != null)
-            {
-                var bytes = Convert.FromBase64String(viewModel.FileBase64);
-                if (bytes.Length < maxFileSize)
-                {
-                    storage.Save(eventId, bytes);
-                }
-            }
-
-            return Json(false);
+            throw new Exception("ViewModel invalid.");
         }
 
 
