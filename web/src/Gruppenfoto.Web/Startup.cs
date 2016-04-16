@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Gruppenfoto.Web;
+﻿using Gruppenfoto.Web;
 using Gruppenfoto.Web.ViewModels.Event;
 using Haufwerk.Client;
 using JetBrains.Annotations;
@@ -20,7 +16,7 @@ namespace GruppenFoto.Web
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables("Gruppenfoto:");
             Configuration = builder.Build();
         }
 

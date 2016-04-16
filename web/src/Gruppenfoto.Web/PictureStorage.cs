@@ -7,6 +7,7 @@ using ImageProcessor.Imaging.Formats;
 using JetBrains.Annotations;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.Drawing;
+using Microsoft.Extensions.Configuration;
 
 namespace Gruppenfoto.Web
 {
@@ -15,9 +16,13 @@ namespace Gruppenfoto.Web
         [NotNull]
         private readonly string _rootPath;
 
-        public PictureStorage([NotNull] IApplicationEnvironment appEnv)
+        public PictureStorage([NotNull] IApplicationEnvironment appEnv, [NotNull] IConfigurationRoot configuration)
         {
-            if (!string.IsNullOrWhiteSpace(appEnv.ApplicationBasePath))
+            var pathInConfig = configuration.Get("PhotosRootPath", "");
+            if (!string.IsNullOrWhiteSpace(pathInConfig))
+            {
+                _rootPath = pathInConfig;
+            } else if (!string.IsNullOrWhiteSpace(appEnv.ApplicationBasePath))
             {
                 _rootPath = Path.Combine(appEnv.ApplicationBasePath, "App_Data");
             }
