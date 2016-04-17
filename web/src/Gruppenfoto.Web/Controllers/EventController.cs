@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Gruppenfoto.Web;
 using Gruppenfoto.Web.ViewModels.Event;
@@ -18,6 +19,7 @@ namespace GruppenFoto.Web.Controllers
             return Redirect("~/");
         }
 
+
         [Route("{eventId}")]
         public IActionResult Index([NotNull] string eventId)
         {
@@ -27,6 +29,18 @@ namespace GruppenFoto.Web.Controllers
                 throw new Exception("Unable to resolve IndexViewModel.");
             }
             return View(viewModel.Fill(eventId));
+        }
+
+
+        [Route("{eventId}.json")]
+        public IActionResult IndexJson([NotNull] string eventId)
+        {
+            var viewModel = HttpContext?.ApplicationServices.GetRequiredService<IndexViewModel>();
+            if (viewModel == null)
+            {
+                throw new Exception("Unable to resolve IndexViewModel.");
+            }
+            return Json(viewModel.Fill(eventId));
         }
 
 

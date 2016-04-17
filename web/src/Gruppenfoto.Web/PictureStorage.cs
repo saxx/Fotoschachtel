@@ -39,7 +39,7 @@ namespace Gruppenfoto.Web
             var fileId = Guid.NewGuid().ToString();
             var filePath = Path.Combine(GetEventDirectory(eventId), fileId + ".jpg");
             File.WriteAllBytes(filePath, content);
-            return new Picture(eventId, fileId, DateTime.UtcNow);
+            return new Picture(fileId, DateTime.UtcNow);
         }
 
 
@@ -50,7 +50,7 @@ namespace Gruppenfoto.Web
             return new DirectoryInfo(eventDirectory)
                 .GetFiles("*.jpg")
                 .OrderBy(x => x.CreationTimeUtc)
-                .Select(f => new Picture(eventId, Path.GetFileNameWithoutExtension(f.Name), f.CreationTimeUtc))
+                .Select(f => new Picture(Path.GetFileNameWithoutExtension(f.Name), f.CreationTimeUtc))
                 .ToList();
         }
 
@@ -108,14 +108,12 @@ namespace Gruppenfoto.Web
 
     public class Picture
     {
-        public Picture([NotNull]string eventId, [NotNull]string fileId, DateTime creationDateTime)
+        public Picture([NotNull]string fileId, DateTime creationDateTime)
         {
-            EventId = eventId;
             FileId = fileId;
             CreationDateTime = creationDateTime;
         }
 
-        public string EventId { get; set; }
         public string FileId { get; set; }
         public DateTime CreationDateTime { get; set; }
     }
