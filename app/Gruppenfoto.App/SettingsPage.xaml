@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gruppenfoto.App.SettingsPage"
+             Padding="10">
+
+  <ScrollView>
+    <StackLayout>
+
+      <StackLayout VerticalOptions="StartAndExpand">
+        <TableView>
+          <TableRoot>
+            <TableSection Title="Einstellungen">
+              <EntryCell x:Name="EventCell" Label="Event"></EntryCell>
+              <EntryCell x:Name="ServerCell" Label="Server"></EntryCell>
+            </TableSection>
+          </TableRoot>
+        </TableView>
+
+        <Label Style="{DynamicResource CaptionStyle}" HorizontalTextAlignment="Center">
+          Gruppenfoto ist ein Hobbyprojekt von Hannes 'saxx' Sachsenhofer.
+        </Label>
+        <Label Style="{DynamicResource CaptionStyle}">
+          Du darfst es gerne benutzen, so viel du magst; aber bitte denk daran: Gruppenfoto wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden.
+        </Label>
+      </StackLayout>
+
+    </StackLayout>
+  </ScrollView>
+
+</ContentPage>

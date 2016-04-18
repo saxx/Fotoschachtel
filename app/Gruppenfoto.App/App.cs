@@ -6,8 +6,26 @@ namespace Gruppenfoto.App
     {
         public App()
         {
-            MainPage = new StartPage();
+            MainPage = new TabbedPage()
+            {
+                Title = "Gruppenfoto"
+                ,
+                Children =
+                {
+                    new StartPage
+                    {
+                        Title = "Foto knipsen"
+                    }
+                    , PicturesPage
+                    , new SettingsPage
+                    {
+                        Title = "Einstellungen"
+                    }
+                }
+            };
         }
+
+        public PicturesPage PicturesPage { get; } = new PicturesPage();
 
         protected override void OnStart()
         {

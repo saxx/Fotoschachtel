@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gruppenfoto.App.PicturesPage"
+             Title="Fotos"
+             Padding="10">
+
+  <AbsoluteLayout>
+    <Label
+      AbsoluteLayout.LayoutBounds="0,0,1,1"
+      AbsoluteLayout.LayoutFlags="SizeProportional"
+      HorizontalTextAlignment="Center"
+      LineBreakMode="CharacterWrap"
+      IsVisible="{Binding HasNoPictures, Mode=OneWay}">
+      Es gibt noch keine Fotos. Du solltest unbedingt welche knipsen!
+    </Label>
+
+    <ListView
+      AbsoluteLayout.LayoutBounds="0,0,1,1"
+      AbsoluteLayout.LayoutFlags="SizeProportional"
+      x:Name="PicturesList"
+      ItemsSource="{Binding Pictures}"
+      IsPullToRefreshEnabled="True"
+      RefreshCommand="{Binding LoadPicturesCommand}"
+      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+      VerticalOptions="Fill"
+      HasUnevenRows="True">
+
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ImageCell
+            ImageSource="{Binding Image}"
+            Detail="{Binding CreationDateTime}"
+            Text="{Binding ImageBytes}">
+          </ImageCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+
+  </AbsoluteLayout>
+
+
+
+</ContentPage>

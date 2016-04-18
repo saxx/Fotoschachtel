@@ -23,6 +23,7 @@ namespace Gruppenfoto.App
 
             string nextFileName = null;
             IFile imageFile = null;
+            bool removeFromQueue = false;
             try
             {
                 nextFileName = Settings.UploadQueue.Last();
@@ -48,24 +49,33 @@ namespace Gruppenfoto.App
 
                         var response = await client.PostAsync($"{Settings.BackendUrl.Trim('/')}/event/{Settings.EventId}/picture/", content);
                         response.EnsureSuccessStatusCode();
+                        removeFromQueue = true;
                     }
                 }
+            }
+            catch (HttpRequestException)
+            {
+                removeFromQueue = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
+                removeFromQueue = true;
             }
             finally
             {
-                if (imageFile != null)
+                if (removeFromQueue)
                 {
-                    await imageFile.DeleteAsync();
-                }
-                if (nextFileName != null)
-                {
-                    var remainingFiles = Settings.UploadQueue.ToList();
-                    remainingFiles.Remove(nextFileName);
-                    Settings.UploadQueue = remainingFiles.ToArray();
+                    if (imageFile != null)
+                    {
+                        await imageFile.DeleteAsync();
+                    }
+                    if (nextFileName != null)
+                    {
+                        var remainingFiles = Settings.UploadQueue.ToList();
+                        remainingFiles.Remove(nextFileName);
+                        Settings.UploadQueue = remainingFiles.ToArray();
+                    }
                 }
                 _isUploading = false;
             }

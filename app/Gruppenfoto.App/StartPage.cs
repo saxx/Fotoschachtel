@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,17 +70,13 @@ namespace Gruppenfoto.App
 
             #region Layout
             _queueLabel = new Label();
-            Padding = new Thickness(10, 10);
+            Padding = new Thickness(10);
             Content = new StackLayout
             {
                 Children = {
                     new StackLayout {
                         VerticalOptions = LayoutOptions.StartAndExpand,
                         Children = {
-                            new Label
-                            {
-                                Text = "Willkommen bei Gruppenfoto!"
-                            },
                             new Label
                             {
                                 Text = "Hier können du und alle anderen Gäste ihre Schnappschüsse zu einem gemeinsamen Event teilen."
@@ -100,7 +97,8 @@ namespace Gruppenfoto.App
             };
             #endregion
 
-            MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", message => {
+            MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", message =>
+            {
                 Device.BeginInvokeOnMainThread(UpdateQueueLabel);
             });
 
@@ -130,9 +128,11 @@ namespace Gruppenfoto.App
                 await stream.WriteAsync(imageBytes, 0, imageBytes.Length);
             }
 
-            Settings.UploadQueue = Settings.UploadQueue.Concat(new[] {fileName}).ToArray();
+            Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { fileName }).ToArray();
 
             UpdateQueueLabel();
+
+            MessagingCenter.Send(new StartUploadMessage(), "StartUpload");
         }
 
 
