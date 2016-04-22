@@ -29,12 +29,14 @@ namespace Gruppenfoto.Web.Controllers
             }
         }
 
+
         [HttpPost, Route("event/{eventId}/picture/{filename}/thumbnails")]
         public async Task<IActionResult> RenderThumbnail([CanBeNull] string eventId, [CanBeNull] string filename)
         {
             await _thumbnailsService.RenderThumbnail(eventId, filename);
             return new NoContentResult();
         }
+
 
         [HttpPost, Route("event/{eventId}/thumbnails")]
         public async Task<IActionResult> RenderThumbnails([CanBeNull] string eventId, [CanBeNull] string filename)

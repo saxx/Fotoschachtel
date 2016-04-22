@@ -84,7 +84,7 @@ namespace Gruppenfoto.Web
             public string EventId { get; set; }
             public DateTime SasExpiration { get; set; }
 
-            public string SasListUrl => ContainerUrl + SasQueryString + "&comp=list&restype=container";
+            public string SasListUrl => ContainerUrl + SasQueryString + "&comp=list&restype=container&prefix=thumbnails-small";
         }
     }
 }

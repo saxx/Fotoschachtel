@@ -5,15 +5,13 @@
 </h1>
 
 <p>
-    <input type="file" id="file" name="file" />
-    <progress value="0" max="100" style="display: none;"></progress>
+    <input type="file" id="file" name="file" multiple/>
+    <div id="progressContainer"></div>
 </p>
 
 <hr />
 
-<div id="pictures">
-
-</div>
+<div id="pictures"></div>
 
 @section scripts {
 
@@ -28,33 +26,45 @@
                 var div = $("#pictures");
                 div.html("");
 
-                var count = 0;
+                var pictures = new Array();
                 $(data).find("EnumerationResults>Blobs>Blob").each(function (i, blob) {
-                    var filename = $(blob).find("Name").text();
-                    if (filename.indexOf("thumbnails-small") === 0) {
-                        filename = filename.substring("thumbnails-small/".length);
-                        count++;
+                    var fileName = $(blob).find("Name").text();
+                    if (fileName.indexOf("thumbnails-small") === 0) {
+                        fileName = fileName.substring("thumbnails-small/".length);
                         var date = $(blob).find("Properties>Last-Modified").text();
-
-                        var thumbnailContainer = $("<div />").addClass("thumbnail");
-                        var thumbnailLink = $("<a />");
-                        var thumbnail = $("<img />");
-                        thumbnailLink.attr("href", "@Html.Raw(Model.SasToken.ContainerUrl)/" + filename + "@Html.Raw(Model.SasToken.SasQueryString)");
-                        thumbnail.attr("src", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-small/" + filename + "@Html.Raw(Model.SasToken.SasQueryString)");
-                        thumbnail.attr("title", date);
-
-                        thumbnailLink.append(thumbnail);
-                        thumbnailContainer.append(thumbnailLink);
-                        div.append(thumbnailContainer);
+                        pictures.push({
+                            fileName: fileName,
+                            date: date,
+                            dateParsed: Date.parse(date)
+                        });
                     }
                 });
 
-                if (count === 0) {
+                pictures.sort(function(a, b) {
+                    return a.dateParsed < b.dateParsed;
+                });
+
+                for (var i = 0; i < pictures.length; i++) {
+                    var picture = pictures[i];
+
+                    var thumbnailContainer = $("<div />").addClass("thumbnail");
+                    var thumbnailLink = $("<a />");
+                    var thumbnail = $("<img />");
+                    thumbnailLink.attr("href", "@Html.Raw(Model.SasToken.ContainerUrl)/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
+                    thumbnail.attr("src", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-small/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
+                    thumbnail.attr("title", picture.date);
+
+                    thumbnailLink.append(thumbnail);
+                    thumbnailContainer.append(thumbnailLink);
+                    div.append(thumbnailContainer);
+                }
+
+                if (pictures.length === 0) {
                     $("h1 small").text("Noch keine Fotos");
-                } else if (count === 1) {
+                } else if (pictures.length === 1) {
                     $("h1 small").text("Erst ein Foto");
                 } else {
-                    $("h1 small").text(count + " Fotos");
+                    $("h1 small").text(pictures.length + " Fotos");
                 }
             });
         }
@@ -65,9 +75,48 @@
     </script>
 
     <script>
-        $("#file").change(function () {
-            $("#file").hide();
-            $("progress").show();
+        var filePicker = $("#file");
+        filePicker.change(function () {
+            var files = filePicker[0].files;
+            for (var i = 0; i < files.length; i++) {
+                upload(files[i]);
+            }
+        });
+
+        var htmlTag = document.getElementsByTagName("html")[0];
+
+        htmlTag.addEventListener('dragover', handleDragOver, false);
+        htmlTag.addEventListener('dragleave', handleDragLeave, false);
+        htmlTag.addEventListener('drop', handleDrop, false);
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.dataTransfer.dropEffect = "copy";
+            htmlTag.classList.add("dragging");
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            htmlTag.classList.remove("dragging");
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            htmlTag.classList.remove("dragging");
+
+            var files = event.dataTransfer.files;
+            for (var i = 0; i < files.length; i++) {
+                upload(files[i]);
+            }
+        }
+
+        function upload(selectedFile) {
+            var progress = $("<progress max=\"100\" />");
+            progress.attr("value", 0);
+            $("#progressContainer").append(progress);
 
             var currentFilePointer = 0;
             var blockIds = new Array();
@@ -76,7 +125,6 @@
             var fileName = guid();
 
             // read the file and find out how many blocks we would need to split it.
-            var selectedFile = $("#file")[0].files[0];
             var maxBlockSize = 256 * 1024;
             if (selectedFile.size < maxBlockSize) {
                 maxBlockSize = selectedFile.size;
@@ -86,7 +134,7 @@
             var reader = new FileReader();
             uploadFileInBlocks();
 
-            reader.onloadend = function (evt) {
+            reader.onloadend = function(evt) {
                 if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                     var uri = submitUri + '&comp=block&blockid=' + blockIds[blockIds.length - 1];
                     var requestData = new Uint8Array(evt.target.result);
@@ -95,17 +143,17 @@
                         type: "PUT",
                         data: requestData,
                         processData: false,
-                        beforeSend: function (xhr) {
+                        beforeSend: function(xhr) {
                             xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
                             xhr.setRequestHeader('Content-Length', requestData.length);
                         },
-                        success: function () {
+                        success: function() {
                             bytesUploaded += requestData.length;
                             var percentComplete = ((parseFloat(bytesUploaded) / parseFloat(selectedFile.size)) * 100).toFixed(0);
-                            $("progress").attr("value", percentComplete);
+                            progress.attr("value", percentComplete);
                             uploadFileInBlocks();
                         },
-                        error: function (xhr, desc, err) {
+                        error: function(xhr, desc, err) {
                             alert("onloadend: " + desc + " " + err);
                         }
                     });
@@ -140,49 +188,56 @@
                     url: uri,
                     type: "PUT",
                     data: requestBody,
-                    beforeSend: function (xhr) {
+                    beforeSend: function(xhr) {
                         xhr.setRequestHeader('x-ms-blob-content-type', selectedFile.type);
                         xhr.setRequestHeader('Content-Length', requestBody.length);
                     },
-                    success: function () {
+                    success: function() {
                         renderThumbnails();
                     },
-                    error: function (xhr, desc, err) {
+                    error: function(xhr, desc, err) {
                         alert("commitBlockList: " + desc + " " + err);
                     }
                 });
             }
 
-            function pad(number, length) {
-                var str = '' + number;
-                while (str.length < length) {
-                    str = '0' + str;
-                }
-                return str;
-            }
-
-            function guid() {
-                return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-            }
-
             function renderThumbnails() {
+                progress.remove();
+
+                // render thumbnails only when there are no more uploads in progress
+                if ($("progress").length > 0) {
+                    return;
+                }
+
                 console.log("Rendering thumbnails ...");
                 $.ajax({
                     method: "POST",
-                    url: "@Url.Action("RenderThumbnails", "Json", new { eventId = Model.SasToken.EventId})"
-                }).done(function () {
+                    url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.SasToken.EventId})"
+                }).done(function() {
                     console.log("Thumbnails rendered.");
                     setTimeout(loadPictures, 1000);
-                }).fail(function (e) {
+                }).fail(function(e) {
                     console.log("Thumbnails failed", e);
-                }).then(function () {
-                    $("#file").val("").show();
-                    $("progress").attr("value", 0).hide();
                 });
             }
-        });
+        }
+    </script>
+
+
+    <script>
+        function pad(number, length) {
+            var str = '' + number;
+            while (str.length < length) {
+                str = '0' + str;
+            }
+            return str;
+        }
+
+        function guid() {
+            return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
     </script>
 }
