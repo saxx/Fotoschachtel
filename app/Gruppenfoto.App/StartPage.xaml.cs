@@ -72,18 +72,7 @@ namespace Gruppenfoto.App
 
         public void UpdateQueueLabel()
         {
-            if (Settings.UploadQueue.Length == 0)
-            {
-                QueueLabel.Text = "";
-            }
-            else if (Settings.UploadQueue.Length == 1)
-            {
-                QueueLabel.Text = "1 Foto wartet auf Upload ...";
-            }
-            else
-            {
-                QueueLabel.Text = Settings.UploadQueue.Length + " Fotos warten auf Upload ...";
-            }
+            ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = Settings.UploadQueue.Length > 0;
         }
     }
 }

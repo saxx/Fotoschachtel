@@ -10,33 +10,32 @@ namespace Gruppenfoto.App
             InitializeComponent();
 
             CopyrightLabel.Text = "Gruppenfoto ist ein Hobbyprojekt von\nHannes 'saxx' Sachsenhofer.";
+            
+            var eventSettingsPage = new EventSettingsPage(this);
+            EventSettingsButton.Clicked += async (sender, args) =>
+            {
+                await Navigation.PushModalAsync(eventSettingsPage, true);
+            };
 
             HomepageButton.Clicked += (sender, args) =>
             {
                 Device.OpenUri(new Uri("https://gruppenfoto.sachsenhofer.com"));
             };
 
-            Disappearing += (sender, args) =>
-            {
-                if (Settings.Event != EventCell.Text || Settings.BackendUrl != ServerCell.Text)
-                {
-                    Settings.Event = EventCell.Text;
-                    Settings.BackendUrl = ServerCell.Text;
+        }
 
-                    // clear the upload queue when switching to another event or server
-                    Settings.UploadQueue = new string[0];
-
-                    // reload the pictures list
-                    ((App) Application.Current).PicturesPage.Refresh();
-                }
-            };
+        public void Refresh()
+        {
+            var fs = new FormattedString();
+            fs.Spans.Add(new Span { Text = "Du bist derzeit mit dem Event " });
+            fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
+            fs.Spans.Add(new Span { Text = " verknüpft" });
+            EventSettingsLabel.FormattedText = fs;
         }
 
         protected override void OnAppearing()
         {
-            EventCell.Text = Settings.Event;
-            ServerCell.Text = Settings.BackendUrl;
-
+            Refresh();
             base.OnAppearing();
         }
     }

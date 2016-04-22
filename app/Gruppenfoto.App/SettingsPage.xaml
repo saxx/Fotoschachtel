@@ -10,24 +10,18 @@
 
   <ScrollView>
     <StackLayout VerticalOptions="Start" Spacing="60">
-      <TableView Intent="Settings" HeightRequest="150">
-        <TableRoot>
-          <TableSection Title="Einstellungen">
-            <EntryCell x:Name="EventCell" Label="Event"></EntryCell>
-            <EntryCell x:Name="ServerCell" Label="Server"></EntryCell>
-          </TableSection>
-        </TableRoot>
-      </TableView>
+      <StackLayout Spacing="10">
+        <Label x:Name="EventSettingsLabel" />
+        <Button x:Name="EventSettingsButton" Text="Ändern" />
+      </StackLayout>
 
       <StackLayout Spacing="10">
         <Label x:Name="CopyrightLabel" HorizontalTextAlignment="Center" FontAttributes="Bold"  />
-        
-        <Button x:Name="HomepageButton" Text="Website öffnen" HeightRequest="40" />
         <Label>
-          Du darfst es gerne benutzen, so viel du magst; aber bitte denk daran: Gruppenfoto wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden.
+          Du darfst Gruppenfoto gerne benutzen, so viel du magst; aber bitte denk daran: Gruppenfoto wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden.
         </Label>
+        <Button x:Name="HomepageButton" Text="Website öffnen" />
       </StackLayout>
     </StackLayout>
   </ScrollView>
-
 </ContentPage>

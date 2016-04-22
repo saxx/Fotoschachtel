@@ -19,7 +19,7 @@ namespace Gruppenfoto.App.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            global::Xamarin.Forms.Forms.Init();
+            Forms.Init();
             LoadApplication(new App());
             
             var uploader = new UploaderTask();

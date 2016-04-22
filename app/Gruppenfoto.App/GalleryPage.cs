@@ -11,6 +11,7 @@ namespace Gruppenfoto.App
 
         public GalleryPage()
         {
+            _tapRecognizer.NumberOfTapsRequired = 2;
             _tapRecognizer.Tapped += async (sender, args) =>
             {
                 await Navigation.PopModalAsync(true);

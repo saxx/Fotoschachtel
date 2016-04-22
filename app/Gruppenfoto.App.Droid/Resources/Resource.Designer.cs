@@ -3454,7 +3454,7 @@ namespace Gruppenfoto.App.Droid
 			public const int ic_setting_light = 2130837592;
 			
 			// aapt resource value: 0x7f020059
-			public const int Icon = 2130837593;
+			public const int icon = 2130837593;
 			
 			// aapt resource value: 0x7f02005a
 			public const int mr_ic_cast_dark = 2130837594;

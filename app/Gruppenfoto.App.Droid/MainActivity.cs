@@ -14,13 +14,9 @@ namespace Gruppenfoto.App.Droid
             MessagingCenter.Subscribe<StartUploadMessage>(this, "StartUpload", message => {
                 StartService(new Intent(this, typeof(UploaderService)));
             });
-            MessagingCenter.Subscribe<PauseUploadMessage>(this, "PauseUpload", message => {
-                StopService(new Intent(this, typeof(UploaderService)));
-            });
-
             base.OnCreate(bundle);
 
-            global::Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
             LoadApplication(new App());
         }
     }

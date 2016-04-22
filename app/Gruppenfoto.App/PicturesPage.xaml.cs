@@ -39,7 +39,7 @@ namespace Gruppenfoto.App
             _isAlreadyLoaded = false;
         }
 
-        
+
         private async Task RefreshInternal()
         {
             if (_isLoading)
@@ -67,12 +67,7 @@ namespace Gruppenfoto.App
             // no pictures, lets display a info message
             if (!ViewModel.Pictures.Any())
             {
-                Grid.Children.Add(new Label
-                {
-                    Text = $"Oh, es gibt noch keine Fotos zum Event {ViewModel.Event} :(\nDu solltest unbedingt welche knipsen."
-                }, 0, 0);
-                PullToRefresh.IsRefreshing = _isLoading = false;
-                ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = false;
+                DisplayNoPicturesMessage();
                 return;
             }
 
@@ -107,7 +102,7 @@ namespace Gruppenfoto.App
                 {
                     //if (!_isLoading)
                     //{
-                        await OpenPicture(pictureIndexClosure);
+                    await OpenPicture(pictureIndexClosure);
                     //}
                 };
                 image.GestureRecognizers.Add(tapGestureRecognizer);
@@ -147,6 +142,22 @@ namespace Gruppenfoto.App
         private async Task OpenPicture(int pictureIndex)
         {
             await _galleryPage.Open(Navigation, pictureIndex);
+        }
+
+
+        private void DisplayNoPicturesMessage()
+        {
+            var fs = new FormattedString();
+            fs.Spans.Add(new Span { Text = "Oh, es gibt noch gar keine Fotos im Event " });
+            fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
+            fs.Spans.Add(new Span { Text = ". Du solltest unbedingt gleich welche knipsen!" });
+
+            Grid.Children.Add(new Label
+            {
+                FormattedText = fs
+            }, 0, 0);
+            PullToRefresh.IsRefreshing = _isLoading = false;
+            ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = false;
         }
     }
 }
