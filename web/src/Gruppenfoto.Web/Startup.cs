@@ -16,6 +16,7 @@ namespace GruppenFoto.Web
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.local.json", true)
                 .AddEnvironmentVariables("Gruppenfoto:");
             Configuration = builder.Build();
         }
@@ -25,10 +26,12 @@ namespace GruppenFoto.Web
 
         public void ConfigureServices([NotNull] IServiceCollection services)
         {
-            services.AddInstance(Configuration);
+            var settings = new Settings(Configuration);
+            services.AddInstance(settings);
             services.AddHaufwerk("Gruppenfoto.Web", "http://haufwerk.sachsenhofer.com");
+            services.AddTransient<SasService>();
+            services.AddTransient<ThumbnailsService>();
             services.AddTransient<IndexViewModel>();
-            services.AddTransient<PictureStorage>();
             services.AddMvc();
         }
 

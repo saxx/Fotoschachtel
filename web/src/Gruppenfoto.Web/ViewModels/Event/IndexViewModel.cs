@@ -1,34 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Gruppenfoto.Web.ViewModels.Event
 {
     public class IndexViewModel
     {
-        #region Constructor
-        [NotNull]
-        private readonly PictureStorage _storage;
+        private readonly SasService _sasService;
 
-        public IndexViewModel([NotNull] PictureStorage storage)
+        public IndexViewModel([NotNull] SasService sasService)
         {
-            _storage = storage;
+            _sasService = sasService;
         }
-        #endregion
 
 
-        [NotNull]
-        public IndexViewModel Fill([NotNull] string eventId)
+        public async Task<IndexViewModel> Fill([CanBeNull] string eventId)
         {
-            EventId = eventId;
-            Pictures = _storage.Load(eventId);
+            SasToken = await _sasService.GetSasForEvent(eventId);
             return this;
         }
-
-
-        [NotNull]
-        public string EventId { get; set; } = "< unknown event >";
-
-        [NotNull, ItemNotNull]
-        public IEnumerable<Picture> Pictures { get; set; } = new List<Picture>();
+        
+        public SasService.SasToken SasToken { get; set; }
     }
 }

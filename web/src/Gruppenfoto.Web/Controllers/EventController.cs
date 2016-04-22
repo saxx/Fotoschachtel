@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Gruppenfoto.Web;
+﻿using System.Threading.Tasks;
 using Gruppenfoto.Web.ViewModels.Event;
 using JetBrains.Annotations;
 using Microsoft.AspNet.Mvc;
@@ -19,119 +15,17 @@ namespace GruppenFoto.Web.Controllers
             return Redirect("~/");
         }
 
-
         [Route("{eventId}")]
-        public IActionResult Index([NotNull] string eventId)
+        public async Task<IActionResult> Index([CanBeNull] string eventId)
         {
-            var viewModel = HttpContext?.ApplicationServices.GetRequiredService<IndexViewModel>();
-            if (viewModel == null)
-            {
-                throw new Exception("Unable to resolve IndexViewModel.");
-            }
-            return View(viewModel.Fill(eventId));
+            //try
+            //{
+                return View(await HttpContext.ApplicationServices.GetRequiredService<IndexViewModel>().Fill(eventId));
+            //}
+            //catch
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
         }
-
-
-        [Route("{eventId}.json")]
-        public IActionResult IndexJson([NotNull] string eventId)
-        {
-            var viewModel = HttpContext?.ApplicationServices.GetRequiredService<IndexViewModel>();
-            if (viewModel == null)
-            {
-                throw new Exception("Unable to resolve IndexViewModel.");
-            }
-            return Json(viewModel.Fill(eventId));
-        }
-
-
-        [HttpGet, Route("{eventId}/picture/{fileId}")]
-        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
-        public IActionResult DownloadPicture([NotNull] string eventId, [NotNull] string fileId, int? size)
-        {
-            var storage = HttpContext?.ApplicationServices.GetRequiredService<PictureStorage>();
-            if (storage == null)
-            {
-                throw new Exception("Unable to resolve PictureStorage.");
-            }
-            return new FileStreamResult(storage.GetStream(eventId, fileId, size), "image/jpg");
-        }
-
-
-        [HttpPost, Route("{eventId}/picture")]
-        public async Task<IActionResult> UploadPicture([NotNull] string eventId, [CanBeNull] UploadPictureViewModel viewModel)
-        {
-            if (viewModel == null)
-            {
-                throw new Exception("ViewModel is null.");
-            }
-            if (string.IsNullOrWhiteSpace(eventId))
-            {
-                throw new Exception("No eventId specified.");
-            }
-
-            var storage = HttpContext?.ApplicationServices.GetRequiredService<PictureStorage>();
-            if (storage == null)
-            {
-                throw new Exception("Unable to resolve PictureStorage.");
-            }
-            const int maxFileSize = 25 * 1024 * 1024;
-
-
-            if (ModelState != null && ModelState.IsValid)
-            {
-                if (viewModel.File != null && viewModel.File.Length > 0)
-                {
-                    if (viewModel.File.Length < maxFileSize)
-                    {
-                        using (var stream = new MemoryStream())
-                        {
-                            // ReSharper disable once PossibleNullReferenceException
-                            await viewModel.File.OpenReadStream().CopyToAsync(stream);
-                            storage.Save(eventId, stream.ToArray());
-                            return Json(true);
-                        }
-                    }
-                    throw new Exception("File too big.");
-                }
-                throw new Exception("No file specified.");
-            }
-
-            throw new Exception("ViewModel invalid.");
-        }
-
-
-        //        [Required]
-        //public IFormFile File { get; set; }
-
     }
 }
-
-/*            if (viewModel == null)
-            {
-                return new RedirectResult("~/");
-            }
-
-            if (_controller.ModelState.IsValid)
-            {
-                if (viewModel.File != null
-                    && viewModel.File.Length > 0
-                    && viewModel.File.Length <= 10 * 1024 * 1024)
-                {
-                    string fileName;
-                    try
-                    {
-                        fileName = ContentDispositionHeaderValue.Parse(viewModel.File.ContentDisposition).FileName.Trim(' ', '"', '\'');
-                    }
-                    catch
-                    {
-                        throw new Exception("Unable to parse content disposition header for filename.");
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(fileName))
-                    {
-
-                        return new JsonResult(true);
-                    }
-                }
-            }
-            return new JsonResult(false);*/

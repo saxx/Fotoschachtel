@@ -1,101 +1,188 @@
 ﻿@model Gruppenfoto.Web.ViewModels.Event.IndexViewModel
 
-@if (Model == null)
-{
-    throw new Exception("Model is null");
-}
-
 <h1>
-    Event @Model.EventId
-
-    @if (!Model.Pictures.Any())
-    {
-        <small>
-            Es sind noch keine Fotos hinterlegt
-        </small>
-    }
-    else if (Model.Pictures.Count() == 1)
-    {
-        <small>
-            Es ist erst ein Foto hinterlegt
-        </small>
-    }
-    else
-    {
-        <small>
-            Es sind schon @Model.Pictures.Count() Fotos hinterlegt
-        </small>
-    }
+    Event @Model.SasToken.EventId <small></small>
 </h1>
 
-<form method="post" asp-controller="Event" asp-action="UploadPicture">
-    <div class="alert alert-danger" style="display: none;" id="upload-error-message">
-        Oje oje, beim Hochladen ist ein Fehler aufgetreten. Bitte versuche es mit einem anderen Bild noch einmal.
-    </div>
+<p>
+    <input type="file" id="file" name="file" />
+    <progress value="0" max="100" style="display: none;"></progress>
+</p>
 
-    <span class="btn btn-primary fileinput-button">
-        <span>Foto auswählen</span>
-    </span>
-    <span>oder ziehe deine Fotos direkt auf diese Seite.</span>
+<hr />
 
-    <input id="file" type="file" name="file" multiple style="display: none;">
+<div id="pictures">
 
-    <div class="row" id="progress-container" style="display: none;">
-        <div class="form-group col-xs-12">
-            <div class="text-muted">Deine Bilder werden hochgeladen ... bitte habe einen Moment Geduld.</div>
-            <div id="progress" class="progress">
-                <div class="progress-bar progress-bar-success"></div>
-            </div>
-        </div>
-    </div>
-</form>
-
-<hr/>
-
-@foreach (var picture in Model.Pictures)
-{
-    <div class="thumbnail">
-        <img src="@Url.Action("DownloadPicture", "Event", new {eventId = Model.EventId, fileId = picture.FileId, size = 200})" title="@picture.CreationDateTime"/>
-    </div>
-}
+</div>
 
 @section scripts {
-    <script src="~/js/jquery-ui.js"></script>
-    <script src="~/js/jquery.fileupload.js"></script>
+
     <script>
-        var progressContainer = $("#progress-container");
-        var uploadContainer = $("#upload-container");
-        var errorMessage = $("#upload-error-message");
+        function loadPictures() {
+            $.ajax({
+                crossDomain: true,
+                dataType: "xml",
+                method: "GET",
+                url: "@Html.Raw(Model.SasToken.SasListUrl)"
+            }).done(function (data) {
+                var div = $("#pictures");
+                div.html("");
 
-        var wasSuccessful = true;
-        $("#file").fileupload({
-            url: "@Url.Action("Create")",
-            dataType: "json",
-            start: function () {
-                uploadContainer.hide();
-                errorMessage.hide();
-                progressContainer.show();
-            },
-            stop: function () {
-                if (wasSuccessful) {
-                    window.location = "@Url.Action("Event", "Index", new { eventId = Model.EventId })";
+                var count = 0;
+                $(data).find("EnumerationResults>Blobs>Blob").each(function (i, blob) {
+                    var filename = $(blob).find("Name").text();
+                    if (filename.indexOf("thumbnails-small") === 0) {
+                        filename = filename.substring("thumbnails-small/".length);
+                        count++;
+                        var date = $(blob).find("Properties>Last-Modified").text();
+
+                        var thumbnailContainer = $("<div />").addClass("thumbnail");
+                        var thumbnailLink = $("<a />");
+                        var thumbnail = $("<img />");
+                        thumbnailLink.attr("href", "@Html.Raw(Model.SasToken.ContainerUrl)/" + filename + "@Html.Raw(Model.SasToken.SasQueryString)");
+                        thumbnail.attr("src", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-small/" + filename + "@Html.Raw(Model.SasToken.SasQueryString)");
+                        thumbnail.attr("title", date);
+
+                        thumbnailLink.append(thumbnail);
+                        thumbnailContainer.append(thumbnailLink);
+                        div.append(thumbnailContainer);
+                    }
+                });
+
+                if (count === 0) {
+                    $("h1 small").text("Noch keine Fotos");
+                } else if (count === 1) {
+                    $("h1 small").text("Erst ein Foto");
                 } else {
-                    uploadContainer.show();
-                    progressContainer.hide();
-                    errorMessage.show();
+                    $("h1 small").text(count + " Fotos");
                 }
-            },
-            done: function (e, data) {
-                wasSuccessful = wasSuccessful && data.result;
-            },
-            progressall: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                progressContainer.find(".progress-bar").css("width", progress + "%");
-            }
-        });
+            });
+        }
 
-        $(".fileinput-button").click(function () {
-            $("#file").click();
+        $(document).ready(function () {
+            loadPictures();
+        });
+    </script>
+
+    <script>
+        $("#file").change(function () {
+            $("#file").hide();
+            $("progress").show();
+
+            var currentFilePointer = 0;
+            var blockIds = new Array();
+            var blockIdPrefix = "block-";
+            var bytesUploaded = 0;
+            var fileName = guid();
+
+            // read the file and find out how many blocks we would need to split it.
+            var selectedFile = $("#file")[0].files[0];
+            var maxBlockSize = 256 * 1024;
+            if (selectedFile.size < maxBlockSize) {
+                maxBlockSize = selectedFile.size;
+            }
+            var totalBytesRemaining = selectedFile.size;
+            var submitUri = "@Html.Raw(Model.SasToken.ContainerUrl)/" + fileName + "@Html.Raw(Model.SasToken.SasQueryString)";
+            var reader = new FileReader();
+            uploadFileInBlocks();
+
+            reader.onloadend = function (evt) {
+                if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                    var uri = submitUri + '&comp=block&blockid=' + blockIds[blockIds.length - 1];
+                    var requestData = new Uint8Array(evt.target.result);
+                    $.ajax({
+                        url: uri,
+                        type: "PUT",
+                        data: requestData,
+                        processData: false,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
+                            xhr.setRequestHeader('Content-Length', requestData.length);
+                        },
+                        success: function () {
+                            bytesUploaded += requestData.length;
+                            var percentComplete = ((parseFloat(bytesUploaded) / parseFloat(selectedFile.size)) * 100).toFixed(0);
+                            $("progress").attr("value", percentComplete);
+                            uploadFileInBlocks();
+                        },
+                        error: function (xhr, desc, err) {
+                            alert("onloadend: " + desc + " " + err);
+                        }
+                    });
+                }
+            };
+
+            function uploadFileInBlocks() {
+                if (totalBytesRemaining > 0) {
+                    var fileContent = selectedFile.slice(currentFilePointer, currentFilePointer + maxBlockSize);
+                    var blockId = blockIdPrefix + pad(blockIds.length, 6);
+                    blockIds.push(btoa(blockId));
+                    reader.readAsArrayBuffer(fileContent);
+                    currentFilePointer += maxBlockSize;
+                    totalBytesRemaining -= maxBlockSize;
+                    if (totalBytesRemaining < maxBlockSize) {
+                        maxBlockSize = totalBytesRemaining;
+                    }
+                } else {
+                    commitBlockList();
+                }
+            }
+
+            function commitBlockList() {
+                var uri = submitUri + '&comp=blocklist';
+                var requestBody = '<?xml version="1.0" encoding="utf-8"?><BlockList>';
+                for (var i = 0; i < blockIds.length; i++) {
+                    requestBody += '<Latest>' + blockIds[i] + '</Latest>';
+                }
+                requestBody += '</BlockList>';
+
+                $.ajax({
+                    url: uri,
+                    type: "PUT",
+                    data: requestBody,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('x-ms-blob-content-type', selectedFile.type);
+                        xhr.setRequestHeader('Content-Length', requestBody.length);
+                    },
+                    success: function () {
+                        renderThumbnails();
+                    },
+                    error: function (xhr, desc, err) {
+                        alert("commitBlockList: " + desc + " " + err);
+                    }
+                });
+            }
+
+            function pad(number, length) {
+                var str = '' + number;
+                while (str.length < length) {
+                    str = '0' + str;
+                }
+                return str;
+            }
+
+            function guid() {
+                return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            function renderThumbnails() {
+                console.log("Rendering thumbnails ...");
+                $.ajax({
+                    method: "POST",
+                    url: "@Url.Action("RenderThumbnails", "Json", new { eventId = Model.SasToken.EventId})"
+                }).done(function () {
+                    console.log("Thumbnails rendered.");
+                    setTimeout(loadPictures, 1000);
+                }).fail(function (e) {
+                    console.log("Thumbnails failed", e);
+                }).then(function () {
+                    $("#file").val("").show();
+                    $("progress").attr("value", 0).hide();
+                });
+            }
         });
     </script>
 }
