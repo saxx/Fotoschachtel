@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
+﻿using Foundation;
 using UIKit;
+using Xamarin.Forms;
 
 namespace Gruppenfoto.App.iOS
 {
@@ -24,7 +21,13 @@ namespace Gruppenfoto.App.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-
+            
+            var uploader = new UploaderTask();
+            MessagingCenter.Subscribe<StartUploadMessage>(this, "StartUpload", async message =>
+            {
+                await uploader.Start();
+            });
+            
             return base.FinishedLaunching(app, options);
         }
     }

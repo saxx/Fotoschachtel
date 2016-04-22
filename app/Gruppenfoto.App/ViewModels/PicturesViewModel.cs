@@ -1,134 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using PCLStorage;
-using Xamarin.Forms;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using ModernHttpClient;
 
 namespace Gruppenfoto.App.ViewModels
 {
     public class PicturesViewModel : BaseViewModel
     {
-        private ObservableCollection<Picture> _pictures = new ObservableCollection<Picture>();
-        public ObservableCollection<Picture> Pictures
-        {
-            get { return _pictures; }
-            set { _pictures = value; OnPropertyChanged(); }
-        }
+        public IEnumerable<Picture> Pictures { get; set; }
+        public string Event { get; private set; }
+        private Settings.SasToken _sasToken;
 
 
-        public string EventId { get; private set; }
-
-
-        private bool _hasNoPictures = true;
-        public bool HasNoPictures
-        {
-            get { return _hasNoPictures; }
-            set { _hasNoPictures = value; OnPropertyChanged(); }
-        }
-
-
-        private Command _loadPicturesCommand;
-        public Command LoadPicturesCommand
-        {
-            get
-            {
-                return _loadPicturesCommand ?? (_loadPicturesCommand = new Command(ExecuteLoadPicturesCommand, () => !IsBusy));
-            }
-        }
-
-
-        private async void ExecuteLoadPicturesCommand()
+        public async Task Fill()
         {
             if (IsBusy)
             {
                 return;
             }
-
-            EventId = Settings.EventId;
             IsBusy = true;
-            LoadPicturesCommand.ChangeCanExecute();
+
+            Event = Settings.Event;
+            _sasToken = await Settings.GetSasToken();
+
+            string xmlString;
             try
             {
-                string responseString;
-                using (var httpClient = new System.Net.Http.HttpClient())
+                using (var httpClient = new HttpClient(new NativeMessageHandler()))
                 {
-                    responseString = await httpClient.GetStringAsync($"{Settings.BackendUrl.Trim('/')}/event/{EventId}.json");
-                }
-
-                var responseContent = Newtonsoft.Json.JsonConvert.DeserializeObject<PicturesResponse>(responseString);
-                var pictures = responseContent.Pictures.OrderByDescending(x => x.CreationDateTime).ToList();
-                HasNoPictures = !pictures.Any();
-                Pictures.Clear();
-                foreach (var p in pictures)
-                {
-                    p.CreationDateTime = p.CreationDateTime.ToLocalTime();
-
-                    var imageFileName = "thumbnail_" + p.FileId + ".jpg";
-                    var imageFileExists = await FileSystem.Current.LocalStorage.CheckExistsAsync(imageFileName);
-                    if (imageFileExists != ExistenceCheckResult.FileExists)
-                    {
-                        var imageFile = await FileSystem.Current.LocalStorage.CreateFileAsync(imageFileName, CreationCollisionOption.ReplaceExisting);
-                        try
-                        {
-                            using (var httpClient = new System.Net.Http.HttpClient())
-                            {
-                                var bytes = await httpClient.GetByteArrayAsync($"{Settings.BackendUrl.Trim('/')}/event/{EventId}/picture/{p.FileId}?size=100");
-                                using (var stream = await imageFile.OpenAsync(FileAccess.ReadAndWrite))
-                                {
-                                    await stream.WriteAsync(bytes, 0, bytes.Length);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            await imageFile.DeleteAsync();
-                        }
-                    }
-
-                    Pictures.Add(p);
+                    xmlString = await httpClient.GetStringAsync(_sasToken.SasListUrl);
                 }
             }
             catch (Exception ex)
             {
-                await new ContentPage().DisplayAlert("Oje", "Beim Laden der Fotos ist ein Fehler aufgetreten\n" + ex.Message, "Och, doof");
+                throw new Exception("Unable to list files in storage: " + ex.Message);
             }
 
+            var pictures = new List<Picture>();
+            try
+            {
+                var xml = XDocument.Parse(xmlString);
+                // ReSharper disable PossibleNullReferenceException
+                // ReSharper disable once LoopCanBeConvertedToQuery
+                foreach (var blobNode in xml.Element("EnumerationResults").Element("Blobs").Elements("Blob"))
+                {
+                    var fileName = blobNode.Element("Name").Value;
+                    if (fileName.StartsWith("thumbnails-small"))
+                    {
+                        fileName = fileName.Substring("thumbnails-small/".Length);
+                        pictures.Add(new Picture
+                        {
+                            FileName = fileName,
+                            SmallThumbnailUrl = $"{_sasToken.ContainerUrl}/thumbnails-small/{fileName}{_sasToken.SasQueryString}",
+                            MediumThumbnailUrl = $"{_sasToken.ContainerUrl}/thumbnails-medium/{fileName}{_sasToken.SasQueryString}",
+                            DateTime = DateTime.Parse(blobNode.Element("Properties").Element("Last-Modified").Value)
+                        });
+                    }
+                }
+                // ReSharper restore PossibleNullReferenceException
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Unable to parse XML with files list: " + ex.Message);
+            }
+            Pictures = pictures.OrderByDescending(x => x.DateTime);
+
             IsBusy = false;
-            LoadPicturesCommand.ChangeCanExecute();
         }
 
 
         public class Picture
         {
-            public string FileId { get; set; }
-            public DateTime CreationDateTime { get; set; }
-            public int ImageBytes { get; set; }
-            public ImageSource Image
-            {
-                get
-                {
-                    var imageFileName = "thumbnail_" + FileId + ".jpg";
-                    var imageFile = FileSystem.Current.LocalStorage.CreateFileAsync(imageFileName, CreationCollisionOption.OpenIfExists).Result;
-                    byte[] imageBytes;
-                    using (var stream = imageFile.OpenAsync(FileAccess.Read).Result)
-                    {
-                        imageBytes = new byte[stream.Length];
-                        stream.ReadAsync(imageBytes, 0, imageBytes.Length).GetAwaiter().GetResult();
-                    }
-                    ImageBytes = imageBytes.Length;
-
-                    return ImageSource.FromStream(() => new MemoryStream(imageBytes));
-                }
-            }
-        }
-
-
-        public class PicturesResponse
-        {
-            public string EventId { get; set; }
-            public IEnumerable<Picture> Pictures { get; set; }
+            public string FileName { get; set; }
+            public string SmallThumbnailUrl { get; set; }
+            public string MediumThumbnailUrl { get; set; }
+            public DateTime DateTime { get; set; }
         }
     }
 }

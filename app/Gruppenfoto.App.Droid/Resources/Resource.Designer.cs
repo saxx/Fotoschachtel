@@ -26,6 +26,7 @@ namespace Gruppenfoto.App.Droid
 		
 		public static void UpdateIdValues()
 		{
+			global::ModernHttpClient.Resource.String.library_name = global::Gruppenfoto.App.Droid.Resource.String.library_name;
 			global::PCLStorage.Resource.String.ApplicationName = global::Gruppenfoto.App.Droid.Resource.String.ApplicationName;
 			global::PCLStorage.Resource.String.Hello = global::Gruppenfoto.App.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Gruppenfoto.App.Droid.Resource.Attribute.actionBarSize;
