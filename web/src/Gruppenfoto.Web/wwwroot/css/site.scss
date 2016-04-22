@@ -1,5 +1,8 @@
-﻿body {
-    margin-top: 60px;
+﻿@import "featherlight";
+@import "featherlight.gallery";
+
+body {
+    //margin-top: 60px;
 }
 
 div.thumbnail {
@@ -19,3 +22,12 @@ progress {
 html.dragging body {
     background-color: #ccc;
 }
+
+.featherlight .featherlight-content {
+    background-color: black;
+    padding: 0;
+    margin: 0;
+    border:0;
+    max-height:100%;
+}
+

@@ -11,233 +11,236 @@
 
 <hr />
 
-<div id="pictures"></div>
+<div id="pictures">
+</div>
 
-@section scripts {
+    @section scripts {
 
-    <script>
-        function loadPictures() {
-            $.ajax({
-                crossDomain: true,
-                dataType: "xml",
-                method: "GET",
-                url: "@Html.Raw(Model.SasToken.SasListUrl)"
-            }).done(function (data) {
-                var div = $("#pictures");
-                div.html("");
+        <script>
+            function loadPictures() {
+                $.ajax({
+                    crossDomain: true,
+                    dataType: "xml",
+                    method: "GET",
+                    url: "@Html.Raw(Model.SasToken.SasListUrl)"
+                }).done(function (data) {
+                    var div = $("#pictures");
+                    div.html("");
 
-                var pictures = new Array();
-                $(data).find("EnumerationResults>Blobs>Blob").each(function (i, blob) {
-                    var fileName = $(blob).find("Name").text();
-                    if (fileName.indexOf("thumbnails-small") === 0) {
-                        fileName = fileName.substring("thumbnails-small/".length);
-                        var date = $(blob).find("Properties>Last-Modified").text();
-                        pictures.push({
-                            fileName: fileName,
-                            date: date,
-                            dateParsed: Date.parse(date)
-                        });
+                    var pictures = new Array();
+                    $(data).find("EnumerationResults>Blobs>Blob").each(function (i, blob) {
+                        var fileName = $(blob).find("Name").text();
+                        if (fileName.indexOf("thumbnails-small") === 0) {
+                            fileName = fileName.substring("thumbnails-small/".length);
+                            var date = $(blob).find("Properties>Last-Modified").text();
+                            pictures.push({
+                                fileName: fileName,
+                                date: date,
+                                dateParsed: Date.parse(date)
+                            });
+                        }
+                    });
+
+                    pictures.sort(function (a, b) {
+                        return a.dateParsed < b.dateParsed;
+                    });
+
+                    for (var i = 0; i < pictures.length; i++) {
+                        var picture = pictures[i];
+
+                        var thumbnailContainer = $("<div />").addClass("thumbnail");
+                        var thumbnailLink = $("<a />");
+                        var thumbnail = $("<img />");
+                        thumbnailLink.attr("href", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-medium/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
+                        thumbnail.attr("src", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-small/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
+                        thumbnail.attr("title", picture.date);
+
+                        thumbnailLink.append(thumbnail);
+                        thumbnailContainer.append(thumbnailLink);
+                        div.append(thumbnailContainer);
                     }
+
+                    if (pictures.length === 0) {
+                        $("h1 small").text("Noch keine Fotos");
+                    } else if (pictures.length === 1) {
+                        $("h1 small").text("Erst ein Foto");
+                    } else {
+                        $("h1 small").text(pictures.length + " Fotos");
+                    }
+
+                    $("#pictures a").featherlightGallery();
                 });
+            }
 
-                pictures.sort(function(a, b) {
-                    return a.dateParsed < b.dateParsed;
-                });
+            $(document).ready(function () {
+                loadPictures();
+            });
+        </script>
 
-                for (var i = 0; i < pictures.length; i++) {
-                    var picture = pictures[i];
-
-                    var thumbnailContainer = $("<div />").addClass("thumbnail");
-                    var thumbnailLink = $("<a />");
-                    var thumbnail = $("<img />");
-                    thumbnailLink.attr("href", "@Html.Raw(Model.SasToken.ContainerUrl)/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
-                    thumbnail.attr("src", "@Html.Raw(Model.SasToken.ContainerUrl)/thumbnails-small/" + picture.fileName + "@Html.Raw(Model.SasToken.SasQueryString)");
-                    thumbnail.attr("title", picture.date);
-
-                    thumbnailLink.append(thumbnail);
-                    thumbnailContainer.append(thumbnailLink);
-                    div.append(thumbnailContainer);
-                }
-
-                if (pictures.length === 0) {
-                    $("h1 small").text("Noch keine Fotos");
-                } else if (pictures.length === 1) {
-                    $("h1 small").text("Erst ein Foto");
-                } else {
-                    $("h1 small").text(pictures.length + " Fotos");
+        <script>
+            var filePicker = $("#file");
+            filePicker.change(function () {
+                var files = filePicker[0].files;
+                for (var i = 0; i < files.length; i++) {
+                    upload(files[i]);
                 }
             });
-        }
 
-        $(document).ready(function () {
-            loadPictures();
-        });
-    </script>
+            var htmlTag = document.getElementsByTagName("html")[0];
 
-    <script>
-        var filePicker = $("#file");
-        filePicker.change(function () {
-            var files = filePicker[0].files;
-            for (var i = 0; i < files.length; i++) {
-                upload(files[i]);
+            htmlTag.addEventListener('dragover', handleDragOver, false);
+            htmlTag.addEventListener('dragleave', handleDragLeave, false);
+            htmlTag.addEventListener('drop', handleDrop, false);
+
+            function handleDragOver(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.dataTransfer.dropEffect = "copy";
+                htmlTag.classList.add("dragging");
             }
-        });
 
-        var htmlTag = document.getElementsByTagName("html")[0];
-
-        htmlTag.addEventListener('dragover', handleDragOver, false);
-        htmlTag.addEventListener('dragleave', handleDragLeave, false);
-        htmlTag.addEventListener('drop', handleDrop, false);
-
-        function handleDragOver(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            event.dataTransfer.dropEffect = "copy";
-            htmlTag.classList.add("dragging");
-        }
-
-        function handleDragLeave(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            htmlTag.classList.remove("dragging");
-        }
-
-        function handleDrop(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            htmlTag.classList.remove("dragging");
-
-            var files = event.dataTransfer.files;
-            for (var i = 0; i < files.length; i++) {
-                upload(files[i]);
+            function handleDragLeave(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                htmlTag.classList.remove("dragging");
             }
-        }
 
-        function upload(selectedFile) {
-            var progress = $("<progress max=\"100\" />");
-            progress.attr("value", 0);
-            $("#progressContainer").append(progress);
+            function handleDrop(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                htmlTag.classList.remove("dragging");
 
-            var currentFilePointer = 0;
-            var blockIds = new Array();
-            var blockIdPrefix = "block-";
-            var bytesUploaded = 0;
-            var fileName = guid();
-
-            // read the file and find out how many blocks we would need to split it.
-            var maxBlockSize = 256 * 1024;
-            if (selectedFile.size < maxBlockSize) {
-                maxBlockSize = selectedFile.size;
+                var files = event.dataTransfer.files;
+                for (var i = 0; i < files.length; i++) {
+                    upload(files[i]);
+                }
             }
-            var totalBytesRemaining = selectedFile.size;
-            var submitUri = "@Html.Raw(Model.SasToken.ContainerUrl)/" + fileName + "@Html.Raw(Model.SasToken.SasQueryString)";
-            var reader = new FileReader();
-            uploadFileInBlocks();
 
-            reader.onloadend = function(evt) {
-                if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                    var uri = submitUri + '&comp=block&blockid=' + blockIds[blockIds.length - 1];
-                    var requestData = new Uint8Array(evt.target.result);
+            function upload(selectedFile) {
+                var progress = $("<progress max=\"100\" />");
+                progress.attr("value", 0);
+                $("#progressContainer").append(progress);
+
+                var currentFilePointer = 0;
+                var blockIds = new Array();
+                var blockIdPrefix = "block-";
+                var bytesUploaded = 0;
+                var fileName = guid();
+
+                // read the file and find out how many blocks we would need to split it.
+                var maxBlockSize = 256 * 1024;
+                if (selectedFile.size < maxBlockSize) {
+                    maxBlockSize = selectedFile.size;
+                }
+                var totalBytesRemaining = selectedFile.size;
+                var submitUri = "@Html.Raw(Model.SasToken.ContainerUrl)/" + fileName + "@Html.Raw(Model.SasToken.SasQueryString)";
+                var reader = new FileReader();
+                uploadFileInBlocks();
+
+                reader.onloadend = function (evt) {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        var uri = submitUri + '&comp=block&blockid=' + blockIds[blockIds.length - 1];
+                        var requestData = new Uint8Array(evt.target.result);
+                        $.ajax({
+                            url: uri,
+                            type: "PUT",
+                            data: requestData,
+                            processData: false,
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
+                                xhr.setRequestHeader('Content-Length', requestData.length);
+                            },
+                            success: function () {
+                                bytesUploaded += requestData.length;
+                                var percentComplete = ((parseFloat(bytesUploaded) / parseFloat(selectedFile.size)) * 100).toFixed(0);
+                                progress.attr("value", percentComplete);
+                                uploadFileInBlocks();
+                            },
+                            error: function (xhr, desc, err) {
+                                alert("onloadend: " + desc + " " + err);
+                            }
+                        });
+                    }
+                };
+
+                function uploadFileInBlocks() {
+                    if (totalBytesRemaining > 0) {
+                        var fileContent = selectedFile.slice(currentFilePointer, currentFilePointer + maxBlockSize);
+                        var blockId = blockIdPrefix + pad(blockIds.length, 6);
+                        blockIds.push(btoa(blockId));
+                        reader.readAsArrayBuffer(fileContent);
+                        currentFilePointer += maxBlockSize;
+                        totalBytesRemaining -= maxBlockSize;
+                        if (totalBytesRemaining < maxBlockSize) {
+                            maxBlockSize = totalBytesRemaining;
+                        }
+                    } else {
+                        commitBlockList();
+                    }
+                }
+
+                function commitBlockList() {
+                    var uri = submitUri + '&comp=blocklist';
+                    var requestBody = '<?xml version="1.0" encoding="utf-8"?><BlockList>';
+                    for (var i = 0; i < blockIds.length; i++) {
+                        requestBody += '<Latest>' + blockIds[i] + '</Latest>';
+                    }
+                    requestBody += '</BlockList>';
+
                     $.ajax({
                         url: uri,
                         type: "PUT",
-                        data: requestData,
-                        processData: false,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
-                            xhr.setRequestHeader('Content-Length', requestData.length);
+                        data: requestBody,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('x-ms-blob-content-type', selectedFile.type);
+                            xhr.setRequestHeader('Content-Length', requestBody.length);
                         },
-                        success: function() {
-                            bytesUploaded += requestData.length;
-                            var percentComplete = ((parseFloat(bytesUploaded) / parseFloat(selectedFile.size)) * 100).toFixed(0);
-                            progress.attr("value", percentComplete);
-                            uploadFileInBlocks();
+                        success: function () {
+                            renderThumbnails();
                         },
-                        error: function(xhr, desc, err) {
-                            alert("onloadend: " + desc + " " + err);
+                        error: function (xhr, desc, err) {
+                            alert("commitBlockList: " + desc + " " + err);
                         }
                     });
                 }
-            };
 
-            function uploadFileInBlocks() {
-                if (totalBytesRemaining > 0) {
-                    var fileContent = selectedFile.slice(currentFilePointer, currentFilePointer + maxBlockSize);
-                    var blockId = blockIdPrefix + pad(blockIds.length, 6);
-                    blockIds.push(btoa(blockId));
-                    reader.readAsArrayBuffer(fileContent);
-                    currentFilePointer += maxBlockSize;
-                    totalBytesRemaining -= maxBlockSize;
-                    if (totalBytesRemaining < maxBlockSize) {
-                        maxBlockSize = totalBytesRemaining;
+                function renderThumbnails() {
+                    progress.remove();
+
+                    // render thumbnails only when there are no more uploads in progress
+                    if ($("progress").length > 0) {
+                        return;
                     }
-                } else {
-                    commitBlockList();
+
+                    console.log("Rendering thumbnails ...");
+                    $.ajax({
+                        method: "POST",
+                        url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.SasToken.EventId})"
+                    }).done(function () {
+                        console.log("Thumbnails rendered.");
+                        setTimeout(loadPictures, 1000);
+                    }).fail(function (e) {
+                        console.log("Thumbnails failed", e);
+                    });
                 }
             }
+        </script>
 
-            function commitBlockList() {
-                var uri = submitUri + '&comp=blocklist';
-                var requestBody = '<?xml version="1.0" encoding="utf-8"?><BlockList>';
-                for (var i = 0; i < blockIds.length; i++) {
-                    requestBody += '<Latest>' + blockIds[i] + '</Latest>';
+
+        <script>
+            function pad(number, length) {
+                var str = '' + number;
+                while (str.length < length) {
+                    str = '0' + str;
                 }
-                requestBody += '</BlockList>';
+                return str;
+            }
 
-                $.ajax({
-                    url: uri,
-                    type: "PUT",
-                    data: requestBody,
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('x-ms-blob-content-type', selectedFile.type);
-                        xhr.setRequestHeader('Content-Length', requestBody.length);
-                    },
-                    success: function() {
-                        renderThumbnails();
-                    },
-                    error: function(xhr, desc, err) {
-                        alert("commitBlockList: " + desc + " " + err);
-                    }
+            function guid() {
+                return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
                 });
             }
-
-            function renderThumbnails() {
-                progress.remove();
-
-                // render thumbnails only when there are no more uploads in progress
-                if ($("progress").length > 0) {
-                    return;
-                }
-
-                console.log("Rendering thumbnails ...");
-                $.ajax({
-                    method: "POST",
-                    url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.SasToken.EventId})"
-                }).done(function() {
-                    console.log("Thumbnails rendered.");
-                    setTimeout(loadPictures, 1000);
-                }).fail(function(e) {
-                    console.log("Thumbnails failed", e);
-                });
-            }
-        }
-    </script>
-
-
-    <script>
-        function pad(number, length) {
-            var str = '' + number;
-            while (str.length < length) {
-                str = '0' + str;
-            }
-            return str;
-        }
-
-        function guid() {
-            return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-    </script>
-}
+        </script>
+    }

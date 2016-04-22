@@ -9,7 +9,7 @@ var prefixer = require("gulp-autoprefixer");
 
 
 var paths = {
-    js: ["wwwroot/js/app/**/*.js"],
+    js: ["wwwroot/js/featherlight.js", "wwwroot/js/featherlight.gallery.js", "wwwroot/js/app/**/*.js"],
     css: ["wwwroot/css/**/*.scss"]
 };
 
