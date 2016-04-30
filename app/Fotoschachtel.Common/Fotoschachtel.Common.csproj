@@ -8,8 +8,8 @@
     <ProjectGuid>{0B954D89-CE78-4A5F-8BD8-60308ED1E510}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gruppenfoto.App</RootNamespace>
-    <AssemblyName>Gruppenfoto.App</AssemblyName>
+    <RootNamespace>Fotoschachtel.Common</RootNamespace>
+    <AssemblyName>Fotoschachtel.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

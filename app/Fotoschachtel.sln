@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gruppenfoto.App.iOS", "Gruppenfoto.App.iOS\Gruppenfoto.App.iOS.csproj", "{775AB225-1C2E-4383-A0C5-58F08F3040B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fotoschachtel.iOS", "Fotoschachtel.iOS\Fotoschachtel.iOS.csproj", "{775AB225-1C2E-4383-A0C5-58F08F3040B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gruppenfoto.App", "Gruppenfoto.App\Gruppenfoto.App.csproj", "{0B954D89-CE78-4A5F-8BD8-60308ED1E510}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fotoschachtel.Common", "Fotoschachtel.Common\Fotoschachtel.Common.csproj", "{0B954D89-CE78-4A5F-8BD8-60308ED1E510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gruppenfoto.App.Droid", "Gruppenfoto.App.Droid\Gruppenfoto.App.Droid.csproj", "{7C8F565C-4C65-46E5-A89F-C8792B7F8245}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fotoschachtel.Droid", "Fotoschachtel.Droid\Fotoschachtel.Droid.csproj", "{7C8F565C-4C65-46E5-A89F-C8792B7F8245}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

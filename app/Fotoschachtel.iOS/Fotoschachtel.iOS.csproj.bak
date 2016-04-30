@@ -8,9 +8,9 @@
     <ProjectGuid>{775AB225-1C2E-4383-A0C5-58F08F3040B8}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Gruppenfoto.App.iOS</RootNamespace>
+    <RootNamespace>Fotoschachtel.Ios</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>GruppenfotoAppiOS</AssemblyName>
+    <AssemblyName>Fotoschachtel.Ios</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -96,11 +96,6 @@
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Gruppenfoto.App\Gruppenfoto.App.csproj">
-      <Name>Gruppenfoto.App</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -258,6 +253,12 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Photo%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fotoschachtel.Common\Fotoschachtel.Common.csproj">
+      <Project>{0b954d89-ce78-4a5f-8bd8-60308ed1e510}</Project>
+      <Name>Fotoschachtel.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
