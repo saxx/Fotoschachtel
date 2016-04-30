@@ -15,6 +15,7 @@ namespace Gruppenfoto.App
             InitializeComponent();
             var media = Plugin.Media.CrossMedia.Current;
 
+
             CameraButton.IsEnabled = media.IsTakePhotoSupported;
             CameraButton.Clicked += async (sender, args) =>
             {

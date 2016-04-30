@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Refractored.XamForms.PullToRefresh.Droid;
 using Xamarin.Forms;
 
 namespace Gruppenfoto.App.Droid
@@ -18,6 +19,7 @@ namespace Gruppenfoto.App.Droid
 
             Forms.Init(this, bundle);
             LoadApplication(new App());
+            PullToRefreshLayoutRenderer.Init();
         }
     }
 }

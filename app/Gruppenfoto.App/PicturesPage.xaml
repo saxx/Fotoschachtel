@@ -3,21 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gruppenfoto.App.PicturesPage"
              xmlns:controls="clr-namespace:Refractored.XamForms.PullToRefresh;assembly=Refractored.XamForms.PullToRefresh"
-             Title="Fotos">
+             Title="Gallerie"
+             Icon="Gallery"
+             BackgroundColor="#26A9E0">
 
   <ContentPage.Padding>
-    <OnPlatform x:TypeArguments="Thickness" iOS="10,20,10,10" Android="10,10,10,10" />
+    <OnPlatform x:TypeArguments="Thickness" iOS="1,20,1,1" Android="1,1,1,1" />
   </ContentPage.Padding>
-
 
   <controls:PullToRefreshLayout x:Name="PullToRefresh" IsPullToRefreshEnabled="true">
     <ScrollView>
       <StackLayout>
-        <ActivityIndicator x:Name="ActivityIndicator" />
+        <ActivityIndicator x:Name="ActivityIndicator" Color="White" WidthRequest="50" HeightRequest="50" />
         <Grid x:Name="Grid" ColumnSpacing="1" RowSpacing="1" VerticalOptions="StartAndExpand" />
       </StackLayout>
     </ScrollView>
   </controls:PullToRefreshLayout>
-
 
 </ContentPage>

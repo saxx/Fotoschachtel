@@ -6,22 +6,15 @@ namespace Gruppenfoto.App
     {
         public App()
         {
-            MainPage = new TabbedPage()
+            MainPage = new TabbedPage
             {
-                Title = "Gruppenfoto"
-                ,
                 Children =
                 {
-                    new StartPage
-                    {
-                        Title = "Foto knipsen"
-                    }
+                    new StartPage()
                     , PicturesPage
-                    , new SettingsPage
-                    {
-                        Title = "Einstellungen"
-                    }
+                    , new SettingsPage()
                 }
+                , BackgroundColor = Colors.BackgroundColor
             };
         }
 

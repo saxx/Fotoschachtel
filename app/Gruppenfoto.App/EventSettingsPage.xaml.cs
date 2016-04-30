@@ -31,7 +31,7 @@ namespace Gruppenfoto.App
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("", "Dieses Event kann nicht gefunden werden.", "Alles klar");
+                        await DisplayAlert("", "Dieses Event kann nicht gefunden werden: " + ex.Message, "Alles klar");
                         return;
                     }
 

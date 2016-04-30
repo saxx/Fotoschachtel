@@ -2,21 +2,29 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xlabs="clr-namespace:XLabs.Forms.Controls;assembly=XLabs.Forms"
-             x:Class="Gruppenfoto.App.StartPage">
-
+             x:Class="Gruppenfoto.App.StartPage"
+             Title="Foto"
+             Icon="Photo"
+             BackgroundColor="#26A9E0">
+  
   <ContentPage.Padding>
-    <OnPlatform x:TypeArguments="Thickness" iOS="10,20,10,10" Android="10,10,10,10" />
+    <OnPlatform x:TypeArguments="Thickness" iOS="5,25,5,5" Android="5,5,5,5" />
   </ContentPage.Padding>
   
   <StackLayout>
-    <StackLayout VerticalOptions="StartAndExpand">
-      <Label>Hier können du und alle anderen Gäste ihre Schnappschüsse zu einem gemeinsamen Event teilen.</Label>
+    <StackLayout VerticalOptions="StartAndExpand" Spacing="5">
+      <Image Source="Icon" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"></Image>
+      <Label TextColor="#F0F1F1">Mit Fotoschachtel können du und alle anderen Gäste eure Fotos eines Events miteinander teilen.</Label>
     </StackLayout>
     
-    <StackLayout VerticalOptions="End">
-      <ActivityIndicator x:Name="ActivityIndicator" IsVisible="False" />
-      <xlabs:ImageButton x:Name="CameraButton" Source="camera" HeightRequest="80" ImageHeightRequest="50" ImageWidthRequest="50" Orientation="ImageOnTop" Text="Foto knipsen"/>
-      <xlabs:ImageButton x:Name="LibraryButton" Source="picture" HeightRequest="40" ImageHeightRequest="30" ImageWidthRequest="30" Orientation="ImageToLeft" Text="Foto auswählen" />      
+    <StackLayout VerticalOptions="End" Spacing="5">
+      <ActivityIndicator x:Name="ActivityIndicator" IsVisible="False" Color="White" />
+      <xlabs:ImageButton x:Name="CameraButton" Source="Camera" HeightRequest="80"
+                          Orientation="ImageOnTop" ImageHeightRequest="50" ImageWidthRequest="50"
+                         Text="Foto knipsen" ImageTintColor="White" TextColor="White" />
+      <xlabs:ImageButton x:Name="LibraryButton" Source="Library" HeightRequest="50"
+                         Orientation="ImageOnTop" ImageHeightRequest="30" ImageWidthRequest="30"
+                         Text="Foto auswählen" ImageTintColor="White" TextColor="White" />
     </StackLayout>
   </StackLayout>
 </ContentPage>
