@@ -1,46 +1,61 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Gruppenfoto.App;
 using Gruppenfoto.App.ViewModels;
+using Refractored.XamForms.PullToRefresh;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
-    public partial class PicturesPage
+    public class HomePageMiddleContent : PullToRefreshLayout
     {
-        private PicturesViewModel ViewModel => BindingContext as PicturesViewModel;
+        private readonly HomePage _parentPage;
+        private readonly Grid _grid;
+
+        private readonly PicturesViewModel _viewModel = new PicturesViewModel();
         private bool _isAlreadyLoaded;
         private bool _isLoading;
         private int _imagesToLoadCount;
 
         private readonly GalleryPage _galleryPage = new GalleryPage();
 
-        public PicturesPage()
-        {
-            InitializeComponent();
-            BindingContext = new PicturesViewModel();
 
-            // we seem to be unable to display the loading icon of the pull-down-control on the first start
-            // so we're using another loading indicator for the first launch only
-            ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = true;
-            Appearing += async (sender, e) =>
+        public HomePageMiddleContent(HomePage parentPage)
+        {
+            _parentPage = parentPage;
+            BackgroundColor = Colors.BackgroundColor;
+            VerticalOptions = LayoutOptions.CenterAndExpand;
+
+            var scrollView = new ScrollView();
+
+            _grid = new Grid
+            {
+                ColumnSpacing = 1,
+                RowSpacing = 1
+            };
+
+            scrollView.Content = new StackLayout
+            {
+                Children =
+                {
+                    _grid
+                }
+            };
+            Content = scrollView;
+
+            parentPage.Appearing += async (sender, e) =>
             {
                 if (!_isAlreadyLoaded)
                 {
-                    await RefreshInternal();
+                    await Refresh();
                 }
             };
-            PullToRefresh.RefreshCommand = new Command(async () => { await RefreshInternal(); }, () => !_isLoading);
+            RefreshCommand = new Command(async () => { await Refresh(); }, () => !_isLoading);
         }
 
 
-        public void Refresh()
-        {
-            _isAlreadyLoaded = false;
-        }
-
-
-        private async Task RefreshInternal()
+        public async Task Refresh()
         {
             if (_isLoading)
             {
@@ -48,35 +63,36 @@ namespace Gruppenfoto.App
             }
 
             _isAlreadyLoaded = true;
-            PullToRefresh.IsRefreshing = _isLoading = true;
+            IsRefreshing = _isLoading = true;
 
             await ThumbnailsService.UpdateThumbnails();
 
             try
             {
-                await ViewModel.Fill();
+                await _viewModel.Fill();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
+                await _parentPage.DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
+                return;
             }
 
-            Grid.ColumnDefinitions.Clear();
-            Grid.Children.Clear();
+            _grid.ColumnDefinitions.Clear();
+            _grid.Children.Clear();
 
             // no pictures, lets display a info message
-            if (!ViewModel.Pictures.Any())
+            if (!_viewModel.Pictures.Any())
             {
                 DisplayNoPicturesMessage();
                 return;
             }
 
-            _imagesToLoadCount = ViewModel.Pictures.Count();
+            _imagesToLoadCount = _viewModel.Pictures.Count();
 
             var rowCount = 0;
             var columnCount = 0;
             var pictureIndex = -1;
-            foreach (var picture in ViewModel.Pictures)
+            foreach (var picture in _viewModel.Pictures)
             {
                 pictureIndex++;
 
@@ -108,7 +124,7 @@ namespace Gruppenfoto.App
                 image.GestureRecognizers.Add(tapGestureRecognizer);
 
                 // add the image to the grid
-                Grid.Children.Add(image, columnCount, rowCount);
+                _grid.Children.Add(image, columnCount, rowCount);
                 if (++columnCount == 3)
                 {
                     rowCount++;
@@ -116,7 +132,7 @@ namespace Gruppenfoto.App
                 }
             }
 
-            _galleryPage.Build(ViewModel);
+            _galleryPage.Build(_viewModel);
         }
 
 
@@ -132,8 +148,7 @@ namespace Gruppenfoto.App
 
                 if (_imagesToLoadCount <= 0)
                 {
-                    PullToRefresh.IsRefreshing = _isLoading = false;
-                    ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = false;
+                    IsRefreshing = _isLoading = false;
                 }
             }
         }
@@ -148,16 +163,17 @@ namespace Gruppenfoto.App
         private void DisplayNoPicturesMessage()
         {
             var fs = new FormattedString();
-            fs.Spans.Add(new Span { Text = "Oh, es gibt noch gar keine Fotos im Event " });
+            fs.Spans.Add(new Span { Text = "Oh, es gibt noch gar\n keine Fotos im Event " });
             fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
-            fs.Spans.Add(new Span { Text = ". Du solltest unbedingt gleich welche knipsen!" });
+            fs.Spans.Add(new Span { Text = ".\n Du solltest unbedingt gleich welche knipsen!" });
 
-            Grid.Children.Add(new Label
+            _grid.Children.Add(new Label
             {
+                HorizontalTextAlignment = TextAlignment.Center,
+                TextColor = Colors.FontColor,
                 FormattedText = fs
             }, 0, 0);
-            PullToRefresh.IsRefreshing = _isLoading = false;
-            ActivityIndicator.IsVisible = ActivityIndicator.IsRunning = false;
+            IsRefreshing = _isLoading = false;
         }
     }
 }

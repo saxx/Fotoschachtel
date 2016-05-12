@@ -1,10 +1,10 @@
 ﻿using Xamarin.Forms;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public static class Colors
     {
-        public static Color BackgroundColor => new Color(39, 170, 224, 255);
+        public static Color BackgroundColor => Color.FromRgb(38, 169, 224);
         public static Color FontColor => Color.White;
     }
 }

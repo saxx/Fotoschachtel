@@ -1,6 +1,5 @@
 ﻿using System;
 using Xamarin.Forms;
-using XLabs;
 
 namespace Gruppenfoto.App
 {
@@ -52,8 +51,8 @@ namespace Gruppenfoto.App
                 var targetY = _yOffset - (originY * Content.Height) * (_currentScale - _startScale);
 
                 // Apply translation based on the change in origin.
-                Content.TranslationX = targetX.Clamp(-Content.Width * (_currentScale - 1), 0);
-                Content.TranslationY = targetY.Clamp(-Content.Height * (_currentScale - 1), 0);
+                //Content.TranslationX = targetX.Clamp(-Content.Width * (_currentScale - 1), 0);
+                //Content.TranslationY = targetY.Clamp(-Content.Height * (_currentScale - 1), 0);
 
                 // Apply scale factor
                 Content.Scale = _currentScale;

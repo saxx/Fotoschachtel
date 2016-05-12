@@ -18,7 +18,7 @@ namespace Gruppenfoto.App.Droid
             base.OnCreate(bundle);
 
             Forms.Init(this, bundle);
-            LoadApplication(new App());
+            LoadApplication(new Fotoschachtel.Common.App());
             PullToRefreshLayoutRenderer.Init();
         }
     }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Gruppenfoto.App;
 using Gruppenfoto.App.ViewModels;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public class GalleryPage : CarouselPage
     {
@@ -30,6 +31,16 @@ namespace Gruppenfoto.App
                     BackgroundColor = Color.Black,
                     Padding = new Thickness(0, 20, 0, 0)
                 };
+
+                Device.OnPlatform(
+                    iOS: () =>
+                    {
+                        page.Padding = new Thickness(0, 20, 0, 0);
+                    },
+                    Android: () =>
+                    {
+                        page.Padding = new Thickness(0, 0, 0, 0);
+                    });
 
                 var layout = new StackLayout();
                 var imageContainer = new PinchToZoomContainer();
@@ -61,6 +72,11 @@ namespace Gruppenfoto.App
 
                 Children.Add(page);
             }
+        }
+
+        private void Android()
+        {
+            throw new NotImplementedException();
         }
 
 

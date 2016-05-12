@@ -1,24 +1,14 @@
-﻿using Xamarin.Forms;
+﻿using Gruppenfoto.App;
+using Xamarin.Forms;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public class App : Application
     {
         public App()
         {
-            MainPage = new TabbedPage
-            {
-                Children =
-                {
-                    new StartPage()
-                    , PicturesPage
-                    , new SettingsPage()
-                }
-                , BackgroundColor = Colors.BackgroundColor
-            };
+            MainPage = new HomePage();
         }
-
-        public PicturesPage PicturesPage { get; } = new PicturesPage();
 
         protected override void OnStart()
         {
