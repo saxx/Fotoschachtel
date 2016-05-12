@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ModernHttpClient;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public class ThumbnailsService
     {

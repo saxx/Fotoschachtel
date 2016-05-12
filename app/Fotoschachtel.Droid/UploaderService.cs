@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Fotoschachtel.Common;
 using Java.Lang;
 using ModernHttpClient;
 using PCLStorage;

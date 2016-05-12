@@ -5,7 +5,7 @@ using ModernHttpClient;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public static class Settings
     {

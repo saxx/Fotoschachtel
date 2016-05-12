@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fotoschachtel.Common.ViewModels;
 using Gruppenfoto.App;
-using Gruppenfoto.App.ViewModels;
 using Xamarin.Forms;
 
-namespace Fotoschachtel.Common
+namespace Fotoschachtel.Common.Views
 {
     public class GalleryPage : CarouselPage
     {
@@ -72,11 +72,6 @@ namespace Fotoschachtel.Common
 
                 Children.Add(page);
             }
-        }
-
-        private void Android()
-        {
-            throw new NotImplementedException();
         }
 
 

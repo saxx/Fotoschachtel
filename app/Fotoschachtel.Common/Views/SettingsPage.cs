@@ -5,7 +5,7 @@ using Gruppenfoto.App;
 using ModernHttpClient;
 using Xamarin.Forms;
 
-namespace Fotoschachtel.Common
+namespace Fotoschachtel.Common.Views
 {
     public class SettingsPage : ContentPage
     {
@@ -38,7 +38,7 @@ namespace Fotoschachtel.Common
                 if (await Save())
                 {
                     await Navigation.PopModalAsync(true);
-                    await _parentPage.Refresh();
+                    _parentPage.Refresh();
                 }
             });
 
