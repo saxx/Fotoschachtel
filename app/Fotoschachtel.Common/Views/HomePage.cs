@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fotoschachtel.Common.ViewModels;
@@ -16,7 +15,7 @@ namespace Fotoschachtel.Common.Views
         public HomePage()
         {
             BackgroundColor = Colors.BackgroundColor;
-            Padding = Device.OnPlatform(new Thickness(0, 20, 0, 0), new Thickness(0), new Thickness(0));
+            Padding = new Thickness(0);
 
             var layout = new AbsoluteLayout();
             BuildMiddleContent(layout);
@@ -29,13 +28,10 @@ namespace Fotoschachtel.Common.Views
         #region Top
         private void BuildTopContent(AbsoluteLayout layout)
         {
-            const int buttonSize = 40;
-
-            var settingsButton = Controls.Image("settings.png", buttonSize, async image =>
+            var settingsButton = Controls.Image("settings.png", 40, async image =>
             {
                 await Navigation.PushModalAsync(_settingsPage = _settingsPage ?? new SettingsPage(this), true);
             });
-
             layout.Children.Add(settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
         }
         #endregion
@@ -218,9 +214,9 @@ namespace Fotoschachtel.Common.Views
         private void DisplayLoadingMessage()
         {
             var fs = new FormattedString();
-            fs.Spans.Add(new Span { Text = "\n\n\n\n Herzlich willkommen bei Fotoschachtel!\n Wir sind schon dabei, alle Fotos für das Event " });
+            fs.Spans.Add(new Span { Text = "\n\n\n\n Herzlich willkommen bei Fotoschachtel!\n\n Wir sind schon dabei,\n alle Fotos für das Event " });
             fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
-            fs.Spans.Add(new Span { Text = " zu laden.\n Bitte noch einen Moment Geduld ..." });
+            fs.Spans.Add(new Span { Text = " zu laden.\n\n Bitte noch einen Moment Geduld ..." });
 
             _grid.Children.Add(new Label
             {

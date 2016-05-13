@@ -41,7 +41,6 @@ namespace Gruppenfoto.App.iOS
                 var filePath = DependencyService.Get<ITemporaryPictureStorage>().GetFullPath(nextFileName);
                 var uploadTask = _session.CreateUploadTask(request, NSUrl.FromFilename(filePath));
                 uploadTask.Resume();
-
             }
         }
     }

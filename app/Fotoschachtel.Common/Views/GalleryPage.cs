@@ -7,18 +7,6 @@ namespace Fotoschachtel.Common.Views
 {
     public class GalleryPage : CarouselPage
     {
-        private readonly TapGestureRecognizer _tapRecognizer = new TapGestureRecognizer();
-
-        public GalleryPage()
-        {
-            _tapRecognizer.NumberOfTapsRequired = 2;
-            _tapRecognizer.Tapped += async (sender, args) =>
-            {
-                await Navigation.PopModalAsync(true);
-            };
-        }
-
-
         public void Build(PicturesViewModel viewModel)
         {
             Children.Clear();
@@ -28,10 +16,8 @@ namespace Fotoschachtel.Common.Views
                 var page = new ContentPage
                 {
                     BackgroundColor = Color.Black,
-                    Padding = new Thickness(0, 20, 0, 0)
+                    Padding = new Thickness(0)
                 };
-
-                page.Padding = Device.OnPlatform(new Thickness(0, 20, 0, 0), new Thickness(0, 0, 0, 0), new Thickness(0, 0, 0, 0));
 
                 var layout = new AbsoluteLayout();
                 var imageContainer = new PinchToZoomContainer();
@@ -48,21 +34,20 @@ namespace Fotoschachtel.Common.Views
                 var label = new Label
                 {
                     HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
                     Text = GetRelativeDateText(picture.DateTime),
                     BackgroundColor = Color.Transparent,
                     TextColor = Color.White
                 };
-                var closeButton = Controls.Image("cancel.png", 30, async clickedButton =>
+                var closeButton = Controls.Image("cancel.png", 40, async clickedButton =>
                 {
                     await Navigation.PopModalAsync(true);
                 });
 
-                layout.GestureRecognizers.Add(_tapRecognizer);
-
                 imageContainer.Content = image;
                 layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
-                layout.Children.Add(label, new Rectangle(0.5, 0, 0.5, 30), AbsoluteLayoutFlags.WidthProportional | AbsoluteLayoutFlags.XProportional);
-                layout.Children.Add(closeButton, new Rectangle(1, 0, 30, 30), AbsoluteLayoutFlags.XProportional);
+                layout.Children.Add(label, new Rectangle(0, 0, 1, 20), AbsoluteLayoutFlags.WidthProportional);
+                layout.Children.Add(closeButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
 
                 page.Content = layout;
                 Children.Add(page);

@@ -16,10 +16,9 @@ namespace Fotoschachtel.Common.Views
         public SettingsPage(HomePage parentPage)
         {
             _parentPage = parentPage;
-            Title = "Einstellungen";
 
             BackgroundColor = Colors.BackgroundColor;
-            Padding = Device.OnPlatform(new Thickness(10, 20, 10, 10), new Thickness(10, 10, 10, 10), new Thickness(10, 10, 10, 10));
+            Padding = new Thickness(10);
 
             var backButton = Controls.Image("Fotoschachtel.Common.Images.back.png", 40, 40, async image =>
             {
