@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fotoschachtel.Common.ViewModels;
-using PCLStorage;
 using Plugin.Media.Abstractions;
 using Refractored.XamForms.PullToRefresh;
 using Xamarin.Forms;
@@ -244,13 +243,13 @@ namespace Fotoschachtel.Common.Views
 
             var libraryButton = Controls.Image("library.png", buttonSize, async image =>
             {
-                await AddUpload(await media.PickPhotoAsync());
+                AddUpload(await media.PickPhotoAsync());
             });
             libraryButton.IsVisible = media.IsPickPhotoSupported;
 
             var cameraButton = Controls.Image("camera.png", buttonSize, async image =>
             {
-                await AddUpload(await media.TakePhotoAsync(new StoreCameraMediaOptions
+                AddUpload(await media.TakePhotoAsync(new StoreCameraMediaOptions
                 {
                     SaveToAlbum = true,
                     DefaultCamera = CameraDevice.Rear
@@ -278,7 +277,7 @@ namespace Fotoschachtel.Common.Views
         }
 
 
-        private async Task AddUpload(MediaFile file)
+        private void AddUpload(MediaFile file)
         {
             if (file == null)
             {
@@ -288,19 +287,8 @@ namespace Fotoschachtel.Common.Views
             UpdateActivityIndicator();
 
             var fileName = Guid.NewGuid() + ".jpg";
-            byte[] imageBytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                file.GetStream().CopyTo(memoryStream);
-                imageBytes = memoryStream.ToArray();
-                file.Dispose();
-            }
-
-            var imageFile = await FileSystem.Current.LocalStorage.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
-            using (var stream = await imageFile.OpenAsync(FileAccess.ReadAndWrite))
-            {
-                await stream.WriteAsync(imageBytes, 0, imageBytes.Length);
-            }
+            DependencyService.Get<ITemporaryPictureStorage>().Save(fileName, file.GetStream());
+            file.Dispose();
 
             Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { fileName }).ToArray();
             MessagingCenter.Send(new StartUploadMessage(), "StartUpload");

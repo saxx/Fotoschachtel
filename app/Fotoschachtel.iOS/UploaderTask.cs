@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Fotoschachtel.Common;
 using Foundation;
-using PCLStorage;
+using Xamarin.Forms;
 
 namespace Gruppenfoto.App.iOS
 {
@@ -20,7 +21,7 @@ namespace Gruppenfoto.App.iOS
             }
 
             var sasToken = await Settings.GetSasToken();
-            
+
             while (Settings.UploadQueue.Any())
             {
                 var nextFileName = Settings.UploadQueue.FirstOrDefault();
@@ -37,10 +38,10 @@ namespace Gruppenfoto.App.iOS
                     ["x-ms-blob-type"] = "BlockBlob"
                 };
 
-                var imageFile = await FileSystem.Current.LocalStorage.GetFileAsync(nextFileName);
-                var uploadTask = _session.CreateUploadTask(request, NSUrl.FromFilename(imageFile.Path));
+                var filePath = DependencyService.Get<ITemporaryPictureStorage>().GetFullPath(nextFileName);
+                var uploadTask = _session.CreateUploadTask(request, NSUrl.FromFilename(filePath));
                 uploadTask.Resume();
-              
+
             }
         }
     }

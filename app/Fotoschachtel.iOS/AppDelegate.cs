@@ -1,11 +1,10 @@
-﻿using Foundation;
+﻿using Fotoschachtel.Common;
+using Foundation;
 using Gruppenfoto.App.iOS;
 using Refractored.XamForms.PullToRefresh.iOS;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
-using XLabs.Forms.Controls;
-
 namespace Gruppenfoto.App.iOS
 {
     [Register("AppDelegate")]
@@ -13,7 +12,6 @@ namespace Gruppenfoto.App.iOS
     {
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            DependencyService.Register<ImageButtonRenderer>();
             PullToRefreshLayoutRenderer.Init();
 
             var uploader = new UploaderTask();
