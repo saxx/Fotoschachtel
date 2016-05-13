@@ -31,17 +31,9 @@ namespace Fotoschachtel.Common.Views
                     Padding = new Thickness(0, 20, 0, 0)
                 };
 
-                Device.OnPlatform(
-                    iOS: () =>
-                    {
-                        page.Padding = new Thickness(0, 20, 0, 0);
-                    },
-                    Android: () =>
-                    {
-                        page.Padding = new Thickness(0, 0, 0, 0);
-                    });
+                page.Padding = Device.OnPlatform(new Thickness(0, 20, 0, 0), new Thickness(0, 0, 0, 0), new Thickness(0, 0, 0, 0));
 
-                var layout = new StackLayout();
+                var layout = new AbsoluteLayout();
                 var imageContainer = new PinchToZoomContainer();
 
                 var image = new Image
@@ -55,20 +47,24 @@ namespace Fotoschachtel.Common.Views
                 };
                 var label = new Label
                 {
-                    HeightRequest = 30,
                     HorizontalTextAlignment = TextAlignment.Center,
                     Text = GetRelativeDateText(picture.DateTime),
                     BackgroundColor = Color.Transparent,
                     TextColor = Color.White
                 };
+                var closeButton = Controls.Image("cancel.png", 30, async clickedButton =>
+                {
+                    await Navigation.PopModalAsync(true);
+                });
 
                 layout.GestureRecognizers.Add(_tapRecognizer);
 
                 imageContainer.Content = image;
-                layout.Children.Add(label);
-                layout.Children.Add(imageContainer);
-                page.Content = layout;
+                layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
+                layout.Children.Add(label, new Rectangle(0.5, 0, 0.5, 30), AbsoluteLayoutFlags.WidthProportional | AbsoluteLayoutFlags.XProportional);
+                layout.Children.Add(closeButton, new Rectangle(1, 0, 30, 30), AbsoluteLayoutFlags.XProportional);
 
+                page.Content = layout;
                 Children.Add(page);
             }
         }
