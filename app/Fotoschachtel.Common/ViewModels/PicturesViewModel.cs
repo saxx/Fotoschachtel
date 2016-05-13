@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Gruppenfoto.App.ViewModels;
 using ModernHttpClient;
 
 namespace Fotoschachtel.Common.ViewModels

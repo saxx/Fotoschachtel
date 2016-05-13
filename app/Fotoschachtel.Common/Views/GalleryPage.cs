@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Fotoschachtel.Common.ViewModels;
-using Gruppenfoto.App;
 using Xamarin.Forms;
 
 namespace Fotoschachtel.Common.Views
@@ -88,7 +87,7 @@ namespace Fotoschachtel.Common.Views
 
         private string GetRelativeDateText(DateTime dateUtc)
         {
-            var difference = (DateTime.UtcNow - dateUtc);
+            var difference = DateTime.UtcNow - dateUtc;
 
             if (difference.TotalSeconds <= 60)
             {

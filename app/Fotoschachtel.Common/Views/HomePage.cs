@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fotoschachtel.Common.ViewModels;
-using Gruppenfoto.App;
 using PCLStorage;
 using Plugin.Media.Abstractions;
 using Refractored.XamForms.PullToRefresh;
@@ -33,13 +32,11 @@ namespace Fotoschachtel.Common.Views
         {
             const int buttonSize = 40;
 
-            var logoImage = Controls.Image("fotoschachtel.png", buttonSize);
             var settingsButton = Controls.Image("settings.png", buttonSize, async image =>
             {
                 await Navigation.PushModalAsync(_settingsPage = _settingsPage ?? new SettingsPage(this), true);
             });
 
-            layout.Children.Add(logoImage, new Rectangle(0, 0, buttonSize, buttonSize));
             layout.Children.Add(settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
         }
         #endregion
@@ -49,7 +46,6 @@ namespace Fotoschachtel.Common.Views
         private Grid _grid;
         private PicturesViewModel _viewModel;
         private GalleryPage _galleryPage;
-        private bool _isAlreadyLoaded;
         private bool _isLoading;
         private int _imagesToLoadCount;
         private PullToRefreshLayout _pullToRefreshLayout;
@@ -64,7 +60,7 @@ namespace Fotoschachtel.Common.Views
                 ColumnSpacing = 1,
                 RowSpacing = 1
             };
-            DisplayNoPicturesMessage();
+            DisplayLoadingMessage();
 
             scrollView.Content = new StackLayout
             {
@@ -78,12 +74,11 @@ namespace Fotoschachtel.Common.Views
             _pullToRefreshLayout.RefreshCommand = new Command(async () => { await RefreshInternal(); }, () => !_isLoading);
             layout.Children.Add(_pullToRefreshLayout, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
 
-            Appearing += async (sender, e) =>
+            Refresh();
+
+            Appearing += (sender, args) =>
             {
-                if (!_isAlreadyLoaded)
-                {
-                    await RefreshInternal();
-                }
+                UpdateActivityIndicator();
             };
         }
 
@@ -104,8 +99,8 @@ namespace Fotoschachtel.Common.Views
                 return;
             }
 
-            _isAlreadyLoaded = true;
-            _pullToRefreshLayout.IsRefreshing = _isLoading = true;
+            _isLoading = true;
+            UpdateActivityIndicator();
 
             await ThumbnailsService.UpdateThumbnails();
 
@@ -117,6 +112,8 @@ namespace Fotoschachtel.Common.Views
             catch (Exception ex)
             {
                 await DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
+                _isLoading = false;
+                UpdateActivityIndicator();
                 return;
             }
 
@@ -127,6 +124,8 @@ namespace Fotoschachtel.Common.Views
             if (!_viewModel.Pictures.Any())
             {
                 DisplayNoPicturesMessage();
+                _isLoading = false;
+                UpdateActivityIndicator();
                 return;
             }
 
@@ -164,7 +163,8 @@ namespace Fotoschachtel.Common.Views
 
                         if (_imagesToLoadCount <= 0)
                         {
-                            _pullToRefreshLayout.IsRefreshing = _isLoading = false;
+                            _isLoading = false;
+                            UpdateActivityIndicator();
                         }
                     }
                 };
@@ -174,10 +174,7 @@ namespace Fotoschachtel.Common.Views
                 var pictureIndexClosure = pictureIndex;
                 tapGestureRecognizer.Tapped += async (s, e) =>
                 {
-                    //if (!_isLoading)
-                    //{
                     await OpenPicture(pictureIndexClosure);
-                    //}
                 };
                 image.GestureRecognizers.Add(tapGestureRecognizer);
 
@@ -215,7 +212,7 @@ namespace Fotoschachtel.Common.Views
                 TextColor = Colors.FontColor,
                 FormattedText = fs
             }, 0, 0);
-            _pullToRefreshLayout.IsRefreshing = _isLoading = false;
+            _isLoading = false;
         }
 
 
@@ -232,12 +229,13 @@ namespace Fotoschachtel.Common.Views
                 TextColor = Colors.FontColor,
                 FormattedText = fs
             }, 0, 0);
-            _pullToRefreshLayout.IsRefreshing = _isLoading = false;
         }
         #endregion
 
 
         #region Bottom
+        private int _uploadsPending;
+
         private void BuildBottomContent(AbsoluteLayout layout)
         {
             const int buttonSize = 60;
@@ -262,11 +260,21 @@ namespace Fotoschachtel.Common.Views
 
             MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", message =>
             {
+                _uploadsPending--;
                 Refresh();
             });
 
             layout.Children.Add(libraryButton, new Rectangle(0, 1, buttonSize, buttonSize), AbsoluteLayoutFlags.YProportional);
             layout.Children.Add(cameraButton, new Rectangle(1, 1, buttonSize, buttonSize), AbsoluteLayoutFlags.PositionProportional);
+        }
+
+
+        private void UpdateActivityIndicator()
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                _pullToRefreshLayout.IsRefreshing = _isLoading || _imagesToLoadCount > 0 || _uploadsPending > 0;
+            });
         }
 
 
@@ -276,6 +284,8 @@ namespace Fotoschachtel.Common.Views
             {
                 return;
             }
+            _uploadsPending++;
+            UpdateActivityIndicator();
 
             var fileName = Guid.NewGuid() + ".jpg";
             byte[] imageBytes;

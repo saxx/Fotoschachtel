@@ -1,5 +1,4 @@
 ﻿using Fotoschachtel.Common.Views;
-using Gruppenfoto.App;
 using Xamarin.Forms;
 
 namespace Fotoschachtel.Common

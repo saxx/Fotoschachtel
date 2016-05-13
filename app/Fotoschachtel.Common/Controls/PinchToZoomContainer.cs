@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App
+namespace Fotoschachtel.Common
 {
     public class PinchToZoomContainer : ContentView
     {
@@ -47,12 +47,12 @@ namespace Gruppenfoto.App
                 var originY = (e.ScaleOrigin.Y - deltaY) * deltaHeight;
 
                 // Calculate the transformed element pixel coordinates.
-                var targetX = _xOffset - (originX * Content.Width) * (_currentScale - _startScale);
-                var targetY = _yOffset - (originY * Content.Height) * (_currentScale - _startScale);
+                var targetX = _xOffset - originX * Content.Width * (_currentScale - _startScale);
+                var targetY = _yOffset - originY * Content.Height * (_currentScale - _startScale);
 
                 // Apply translation based on the change in origin.
-                //Content.TranslationX = targetX.Clamp(-Content.Width * (_currentScale - 1), 0);
-                //Content.TranslationY = targetY.Clamp(-Content.Height * (_currentScale - 1), 0);
+                // Content.TranslationX = targetX.Clamp(-Content.Width * (_currentScale - 1), 0);
+                // Content.TranslationY = targetY.Clamp(-Content.Height * (_currentScale - 1), 0);
 
                 // Apply scale factor
                 Content.Scale = _currentScale;

@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Fotoschachtel.Common;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Xamarin.Forms;
 
@@ -15,11 +16,12 @@ namespace Gruppenfoto.App.Droid
             MessagingCenter.Subscribe<StartUploadMessage>(this, "StartUpload", message => {
                 StartService(new Intent(this, typeof(UploaderService)));
             });
+
             base.OnCreate(bundle);
 
             Forms.Init(this, bundle);
-            LoadApplication(new Fotoschachtel.Common.App());
             PullToRefreshLayoutRenderer.Init();
+            LoadApplication(new Fotoschachtel.Common.App());
         }
     }
 }

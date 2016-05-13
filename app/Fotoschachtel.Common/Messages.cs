@@ -1,4 +1,4 @@
-﻿namespace Gruppenfoto.App
+﻿namespace Fotoschachtel.Common
 {
     public class StartUploadMessage
     {

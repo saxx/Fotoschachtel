@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Gruppenfoto.App.ViewModels
+namespace Fotoschachtel.Common.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -23,7 +23,7 @@ namespace Gruppenfoto.App.ViewModels
             set { SetProperty(ref _subtitle, value); }
         }
 
-        private string _icon = null;
+        private string _icon;
         public const string IconPropertyName = "Icon";
         public string Icon
         {

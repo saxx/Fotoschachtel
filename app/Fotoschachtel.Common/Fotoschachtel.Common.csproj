@@ -44,7 +44,6 @@
     <Compile Include="Controls\Prompt.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controls\PinchToZoomContainer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Views\SettingsPage.cs" />
     <Compile Include="ThumbnailsService.cs" />
@@ -116,9 +115,6 @@
     <EmbeddedResource Include="Images\save.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\fotoschachtel.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\settings.png" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +123,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\camera.png" />
     <EmbeddedResource Include="Images\library.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

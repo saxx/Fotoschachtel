@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Gruppenfoto.App;
 using ModernHttpClient;
 using Xamarin.Forms;
 
@@ -12,6 +11,7 @@ namespace Fotoschachtel.Common.Views
         private readonly HomePage _parentPage;
         private Label _eventLabel;
         private Label _serverLabel;
+        private readonly Image _saveButton;
 
         public SettingsPage(HomePage parentPage)
         {
@@ -19,21 +19,13 @@ namespace Fotoschachtel.Common.Views
             Title = "Einstellungen";
 
             BackgroundColor = Colors.BackgroundColor;
-            Device.OnPlatform(
-                iOS: () =>
-                {
-                    Padding = new Thickness(10, 20, 10, 10);
-                },
-                Android: () =>
-                {
-                    Padding = new Thickness(10, 10, 10, 10);
-                });
+            Padding = Device.OnPlatform(new Thickness(10, 20, 10, 10), new Thickness(10, 10, 10, 10), new Thickness(10, 10, 10, 10));
 
             var backButton = Controls.Image("Fotoschachtel.Common.Images.back.png", 40, 40, async image =>
             {
                 await Navigation.PopModalAsync(true);
             });
-            var saveButton = Controls.Image("Fotoschachtel.Common.Images.save.png", 40, 40, async image =>
+            _saveButton = Controls.Image("Fotoschachtel.Common.Images.save.png", 40, 40, async image =>
             {
                 if (await Save())
                 {
@@ -41,15 +33,16 @@ namespace Fotoschachtel.Common.Views
                     _parentPage.Refresh();
                 }
             });
+            _saveButton.IsVisible = false;
 
             var layout = new AbsoluteLayout();
             layout.Children.Add(new ScrollView
             {
-                Padding = new Thickness(0, 40, 0, 0),
+                Padding = new Thickness(0, 50, 0, 0),
                 Content = BuildContent()
             }, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
             layout.Children.Add(backButton, new Rectangle(0, 0, 40, 40));
-            layout.Children.Add(saveButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
+            layout.Children.Add(_saveButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
 
             Content = layout;
         }
@@ -75,6 +68,7 @@ namespace Fotoschachtel.Common.Views
                 {
                     label.Text = result;
                 }
+                EnableDisableSaveButton();
             });
 
             _serverLabel = Controls.LabelMonospace(Settings.BackendUrl, async label =>
@@ -84,6 +78,7 @@ namespace Fotoschachtel.Common.Views
                 {
                     label.Text = result;
                 }
+                EnableDisableSaveButton();
             });
 
             return new StackLayout
@@ -172,6 +167,12 @@ namespace Fotoschachtel.Common.Views
             }
 
             return true;
+        }
+
+
+        private void EnableDisableSaveButton()
+        {
+            _saveButton.IsVisible = Settings.Event != _eventLabel.Text || Settings.BackendUrl != _serverLabel.Text;
         }
     }
 }
