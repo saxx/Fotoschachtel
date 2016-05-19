@@ -16,7 +16,6 @@ namespace Fotoschachtel.Common
             var messageLabel = Controls.Label(description);
             messageLabel.Margin = new Thickness(10);
             var textbox = Controls.EntryMonospace(currentValue ?? "");
-            //textbox.Margin = new Thickness(0, 0, 0, 10);
 
             var okButton = Controls.Image("save.png", 40, async image =>
             {
@@ -39,8 +38,8 @@ namespace Fotoschachtel.Common
             };
             var layout = new StackLayout
             {
-                Padding = new Thickness(10),
-                VerticalOptions = LayoutOptions.CenterAndExpand,
+                Padding = new Thickness(10, 40, 10, 10),
+                VerticalOptions = LayoutOptions.StartAndExpand,
                 Children = { titleLabel, messageLabel, textbox, buttons }
             };
 

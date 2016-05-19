@@ -126,8 +126,8 @@ namespace Fotoschachtel.Common.Views
                             {
                                 TextColor = Colors.FontColor,
                                 Text =
-                                    "Du darfst Gruppenfoto gerne benutzen, so viel du magst; "
-                                    + "aber bitte denk daran: Gruppenfoto wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung "
+                                    "Du darfst Fotoschachtel gerne benutzen, so viel du magst; "
+                                    + "aber bitte denk daran: Fotoschachtel wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung "
                                     + "für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. "
                                     + "In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, "
                                     + "ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden."

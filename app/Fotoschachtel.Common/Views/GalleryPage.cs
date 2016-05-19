@@ -46,7 +46,7 @@ namespace Fotoschachtel.Common.Views
 
                 imageContainer.Content = image;
                 layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
-                layout.Children.Add(label, new Rectangle(0, 0, 1, 20), AbsoluteLayoutFlags.WidthProportional);
+                layout.Children.Add(label, new Rectangle(0, 0, 1, 25), AbsoluteLayoutFlags.WidthProportional);
                 layout.Children.Add(closeButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
 
                 page.Content = layout;

@@ -11,6 +11,7 @@ namespace Fotoschachtel.Common.Views
     public class HomePage : ContentPage
     {
         private SettingsPage _settingsPage;
+        private Image _settingsButton;
 
         public HomePage()
         {
@@ -28,11 +29,11 @@ namespace Fotoschachtel.Common.Views
         #region Top
         private void BuildTopContent(AbsoluteLayout layout)
         {
-            var settingsButton = Controls.Image("settings.png", 40, async image =>
+            _settingsButton = Controls.Image("settings.png", 40, async image =>
             {
                 await Navigation.PushModalAsync(_settingsPage = _settingsPage ?? new SettingsPage(this), true);
             });
-            layout.Children.Add(settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
+            layout.Children.Add(_settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
         }
         #endregion
 
@@ -41,7 +42,6 @@ namespace Fotoschachtel.Common.Views
         private Grid _grid;
         private PicturesViewModel _viewModel;
         private GalleryPage _galleryPage;
-        private bool _isLoading;
         private int _imagesToLoadCount;
         private PullToRefreshLayout _pullToRefreshLayout;
 
@@ -66,7 +66,11 @@ namespace Fotoschachtel.Common.Views
             };
 
             _pullToRefreshLayout.Content = scrollView;
-            _pullToRefreshLayout.RefreshCommand = new Command(async () => { await RefreshInternal(); }, () => !_isLoading);
+            _pullToRefreshLayout.RefreshCommand = new Command(() =>
+            {
+                _pullToRefreshLayout.IsRefreshing = true;
+                Refresh();
+            }, () => !IsLoading);
             layout.Children.Add(_pullToRefreshLayout, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
 
             Refresh();
@@ -87,28 +91,39 @@ namespace Fotoschachtel.Common.Views
         }
 
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                _isLoading = value;
+                UpdateActivityIndicator();
+            }
+        }
+
         private async Task RefreshInternal()
         {
-            if (_isLoading)
+            if (IsLoading)
             {
                 return;
             }
 
-            _isLoading = true;
-            UpdateActivityIndicator();
-
+            IsLoading = true;
             await ThumbnailsService.UpdateThumbnails();
 
             try
             {
                 _viewModel = _viewModel ?? new PicturesViewModel();
                 await _viewModel.Fill();
+                IsLoading = false;
+                _pullToRefreshLayout.IsRefreshing = false;
             }
             catch (Exception ex)
             {
+                IsLoading = false;
+                _pullToRefreshLayout.IsRefreshing = false;
                 await DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
-                _isLoading = false;
-                UpdateActivityIndicator();
                 return;
             }
 
@@ -119,8 +134,6 @@ namespace Fotoschachtel.Common.Views
             if (!_viewModel.Pictures.Any())
             {
                 DisplayNoPicturesMessage();
-                _isLoading = false;
-                UpdateActivityIndicator();
                 return;
             }
 
@@ -154,12 +167,6 @@ namespace Fotoschachtel.Common.Views
                         if (!senderImage.IsLoading)
                         {
                             _imagesToLoadCount--;
-                        }
-
-                        if (_imagesToLoadCount <= 0)
-                        {
-                            _isLoading = false;
-                            UpdateActivityIndicator();
                         }
                     }
                 };
@@ -207,7 +214,6 @@ namespace Fotoschachtel.Common.Views
                 TextColor = Colors.FontColor,
                 FormattedText = fs
             }, 0, 0);
-            _isLoading = false;
         }
 
 
@@ -266,10 +272,27 @@ namespace Fotoschachtel.Common.Views
 
         private void UpdateActivityIndicator()
         {
-            Device.BeginInvokeOnMainThread(() =>
+            if (IsLoading || _imagesToLoadCount > 0 || _uploadsPending > 0)
             {
-                _pullToRefreshLayout.IsRefreshing = _isLoading || _imagesToLoadCount > 0 || _uploadsPending > 0;
-            });
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (_settingsButton != null)
+                        {
+                            await _settingsButton.RelRotateTo(7, 30, Easing.Linear);
+                            if (IsLoading || _imagesToLoadCount > 0 || _uploadsPending > 0)
+                            {
+                                UpdateActivityIndicator();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // do nothing here
+                    }
+                });
+            }
         }
 
 
