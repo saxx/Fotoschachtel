@@ -4,7 +4,7 @@ os: Visual Studio 2015
 
 build_script:
 - CALL dotnet restore ./web
-- CALL dotnet publish --configuration Release --output ./web/bin/publish ./web
+- CALL dotnet publish --configuration Release --output bin/publish ./web
 
 artifacts:
 - path: ./web/bin/publish
