@@ -3,13 +3,14 @@ version: '{build}'
 os: Visual Studio 2015
 
 install:
+- choco install dotnetcore
 
 build_script:
-- cd web
-- CALL dotnet publish --configuration Release --output ./bin/publish
+- CALL dotnet restore ./web/
+- CALL dotnet publish --configuration Release --output ./bin/publish ./web/
 
 artifacts:
-- path: web/bin/publish
+- path: ./web/bin/publish
   name: Web application
 
 environment:
