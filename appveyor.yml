@@ -3,15 +3,13 @@ version: '{build}'
 os: Visual Studio 2015
 
 install:
-- dnvm install -arch x64 1.0.0-rc1-update1
-- dnu restore --quiet ".\web\src\Gruppenfoto.Web"
 
 build_script:
-- SET PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
-- CALL dnu publish ".\web\src\Gruppenfoto.Web" --out "%APPVEYOR_BUILD_FOLDER%\artifacts\publish" --configuration Release --no-source --runtime dnx-clr-win-x64.1.0.0-rc1-update1 --wwwroot-out "wwwroot" --quiet
+- cd web
+- CALL dotnet publish --configuration Release --output ./bin/publish
 
 artifacts:
-- path: artifacts/publish
+- path: web/bin/publish
   name: Web application
 
 environment:
@@ -24,7 +22,6 @@ environment:
 
 
 deploy_script:
-- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Gruppenfoto,recycleMode=StopAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
-- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath=%APPVEYOR_BUILD_FOLDER%\artifacts\publish\wwwroot -dest:contentPath=Gruppenfoto,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
-- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPathLib=%APPVEYOR_BUILD_FOLDER%\artifacts\publish\approot -dest:contentPathLib=Gruppenfoto,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
-- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Gruppenfoto,recycleMode=StartAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
+- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Fotoschachtel,recycleMode=StopAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
+- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath=%APPVEYOR_BUILD_FOLDER%\web\bin\publish -dest:contentPath=Fotoschachtel,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
+- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Fotoschachtel,recycleMode=StartAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
