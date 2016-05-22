@@ -2,9 +2,6 @@ version: '{build}'
 
 os: Visual Studio 2015
 
-install:
-- choco install dotnetcore
-
 build_script:
 - CALL dotnet restore ./web/
 - CALL dotnet publish --configuration Release --output ./bin/publish ./web/
