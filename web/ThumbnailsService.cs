@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
 using JetBrains.Annotations;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Linq;
+using Microsoft.Extensions.Options;
 
-namespace Gruppenfoto.Web
+namespace Fotoschachtel
 {
     public class ThumbnailsService
     {
         private readonly Settings _settings;
 
-        public ThumbnailsService([NotNull] Settings settings)
+        public ThumbnailsService([NotNull] IOptions<Settings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
 

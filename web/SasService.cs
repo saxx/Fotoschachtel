@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
-namespace Gruppenfoto.Web
+namespace Fotoschachtel
 {
     public class SasService
     {
         private readonly Settings _settings;
 
-        public SasService([NotNull] Settings settings)
+        public SasService([NotNull] IOptions<Settings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
 

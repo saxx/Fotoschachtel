@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace Gruppenfoto.Web.ViewModels.Event
+namespace Fotoschachtel.ViewModels.Event
 {
     public class IndexViewModel
     {

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Gruppenfoto.Web.Controllers
+namespace Fotoschachtel.Controllers
 {
     [Route("json")]
     public class JsonController

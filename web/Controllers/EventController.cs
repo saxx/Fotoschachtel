@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Gruppenfoto.Web.ViewModels.Event;
+using Fotoschachtel.ViewModels.Event;
 using JetBrains.Annotations;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GruppenFoto.Web.Controllers
+namespace Fotoschachtel.Controllers
 {
     [Route("event")]
     public class EventController : Controller
@@ -20,7 +20,7 @@ namespace GruppenFoto.Web.Controllers
         {
             //try
             //{
-                return View(await HttpContext.ApplicationServices.GetRequiredService<IndexViewModel>().Fill(eventId));
+                return View(await HttpContext.RequestServices.GetService<IndexViewModel>().Fill(eventId));
             //}
             //catch
             //{
