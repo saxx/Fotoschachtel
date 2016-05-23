@@ -4,7 +4,7 @@ using Fotoschachtel.Common;
 using Foundation;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App.iOS
+namespace Fotoschachtel.Ios
 {
     public class UploaderTask
     {
@@ -14,7 +14,7 @@ namespace Gruppenfoto.App.iOS
         {
             if (_session == null)
             {
-                using (var config = NSUrlSessionConfiguration.CreateBackgroundSessionConfiguration("GruppenfotoUpload"))
+                using (var config = NSUrlSessionConfiguration.CreateBackgroundSessionConfiguration("FotoschachtelUpload"))
                 {
                     _session = NSUrlSession.FromConfiguration(config, new UploaderDelegate(), new NSOperationQueue());
                 }

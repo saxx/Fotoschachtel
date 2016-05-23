@@ -5,7 +5,7 @@ using Android.Runtime;
 using Plugin.CurrentActivity;
 using Application = Android.App.Application;
 
-namespace Gruppenfoto.App.Droid
+namespace Fotoschachtel.Droid
 {
 
 #if DEBUG

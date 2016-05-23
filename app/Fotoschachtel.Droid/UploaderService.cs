@@ -10,7 +10,7 @@ using Java.Lang;
 using ModernHttpClient;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App.Droid
+namespace Fotoschachtel.Droid
 {
     [Service]
     public class UploaderService : Service

@@ -14,7 +14,7 @@ namespace Fotoschachtel.Common
 
         public static string BackendUrl
         {
-            get { return AppSettings.GetValueOrDefault("BackendUrl", "https://gruppenfoto.sachsenhofer.com"); }
+            get { return AppSettings.GetValueOrDefault("BackendUrl", "https://fotoschachtel.sachsenhofer.com"); }
             set { AppSettings.AddOrUpdateValue("BackendUrl", value.Trim('/')); }
         }
 

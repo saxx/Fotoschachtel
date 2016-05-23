@@ -2,7 +2,7 @@
 using Foundation;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App.iOS
+namespace Fotoschachtel.Ios
 {
     public class UploaderDelegate : NSUrlSessionTaskDelegate
     {

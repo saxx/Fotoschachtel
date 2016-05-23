@@ -57,7 +57,7 @@ namespace Fotoschachtel.Common.Views
             };
             websiteButton.Clicked += (sender, args) =>
             {
-                Device.OpenUri(new Uri("https://gruppenfoto.sachsenhofer.com"));
+                Device.OpenUri(new Uri("https://fotoschachtel.sachsenhofer.com"));
             };
 
             _eventLabel = Controls.LabelMonospace(Settings.Event, async label =>

@@ -1,11 +1,11 @@
 ﻿using Fotoschachtel.Common;
 using Foundation;
-using Gruppenfoto.App.iOS;
 using Refractored.XamForms.PullToRefresh.iOS;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
-namespace Gruppenfoto.App.iOS
+
+namespace Fotoschachtel.Ios
 {
     [Register("AppDelegate")]
     public class AppDelegate : FormsApplicationDelegate

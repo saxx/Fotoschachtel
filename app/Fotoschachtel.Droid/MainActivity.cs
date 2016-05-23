@@ -6,7 +6,7 @@ using Fotoschachtel.Common;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Xamarin.Forms;
 
-namespace Gruppenfoto.App.Droid
+namespace Fotoschachtel.Droid
 {
     [Activity(Label = "Fotoschachtel", Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity

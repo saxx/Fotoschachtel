@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace Gruppenfoto.App.iOS
+namespace Fotoschachtel.Ios
 {
     public class Application
     {
