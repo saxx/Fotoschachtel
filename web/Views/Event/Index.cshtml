@@ -1,15 +1,18 @@
 ﻿@model Fotoschachtel.ViewModels.Event.IndexViewModel
 
+@{
+    ViewBag.BodyClass = "page-event";
+}
+
 <h1>
-    Event @Model.SasToken.EventId <small></small>
+    @Model.SasToken.EventId <small></small>
 </h1>
 
 <p>
-    <input type="file" id="file" name="file" multiple/>
+    Um Fotos zu diesem Event hinzuzufügen, sie einfach auf diese Seite ziehen, oder <a href="#" id="uploadLink">hier</a> klicken.
+    <input type="file" id="file" name="file" multiple style="display: none;"/>
     <div id="progressContainer"></div>
 </p>
-
-<hr />
 
 <div id="pictures">
 </div>
@@ -61,11 +64,11 @@
                     }
 
                     if (pictures.length === 0) {
-                        $("h1 small").text("Noch keine Fotos");
+                        $("h1 small").text("Noch keine Fotos im Event");
                     } else if (pictures.length === 1) {
-                        $("h1 small").text("Erst ein Foto");
+                        $("h1 small").text("Erst ein Foto im Event");
                     } else {
-                        $("h1 small").text(pictures.length + " Fotos");
+                        $("h1 small").text(pictures.length + " Fotos im Event");
                     }
 
                     $("#pictures a").featherlightGallery();
@@ -74,6 +77,10 @@
 
             $(document).ready(function () {
                 loadPictures();
+            });
+
+            $("#uploadLink").click(function() {
+                $("#file").click();
             });
         </script>
 

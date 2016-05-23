@@ -1,33 +1,110 @@
 ﻿@import "featherlight";
 @import "featherlight.gallery";
 
+$blue: #26A9E0;
+$white: white;
+
+
 body {
-    //margin-top: 60px;
+    background-color: $blue;
+    color: white;
+    margin-top: 12px;
+    margin-bottom: 0;
 }
 
-div.thumbnail {
-    height: 202px;
-    width: 202px;
-    float: left;
-    padding: 0;
-    margin: 0 20px 20px 0;
-    text-align: center;
-    border: 0;
+
+a, a:visited, a:active, a:focus {
+    color: white;
+    text-decoration: underline dotted;
 }
 
-progress {
-    width: 100%;
+
+body.page-home {
+    .container {
+        max-width: 768px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin: 12px;
+    }
+
+    ul {
+        font-size: 1.4em;
+        list-style-type: none;
+        
+        li {
+            margin-top: 12px;
+        }
+
+        .glyphicon {
+            font-size: 1.6em;
+            vertical-align: bottom;
+            padding-right: 12px;
+        }
+    }
+
+    p#logo {
+        text-align:center;
+        margin:0;
+
+        img {
+            width: 512px;
+            @media(max-width: 512px) {
+                width: 256px;
+            }
+        }
+    }
 }
 
-html.dragging body {
-    background-color: #ccc;
+
+body.page-event {
+    h1 {
+        text-align: center;
+        font-size: 5em;
+        margin-top: 0;
+
+        @media(max-width: 769px) {
+            font-size: 3em; 
+        }
+
+        small {
+            font-size: 0.5em;
+            color: $white;
+
+            @media(max-width: 769px) {
+                display: block;
+                margin: 0;
+            }
+        }
+    }
+
+    .thumbnail {
+        height: 202px;
+        width: 202px;
+        float: left;
+        padding: 0;
+        margin: 0 20px 20px 0;
+        text-align: center;
+        border: 0;
+        background-color: $blue;
+    }
+
+    progress {
+        width: 100%;
+    }
+
+    .featherlight .featherlight-content {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        max-height: 100%;
+    }
 }
 
-.featherlight .featherlight-content {
-    background-color: black;
-    padding: 0;
-    margin: 0;
-    border:0;
-    max-height:100%;
+html.dragging body, html.dragging .thumbnail {
+    background-color: $white;
 }
 
