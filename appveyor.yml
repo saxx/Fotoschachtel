@@ -4,6 +4,7 @@ os: Visual Studio 2015
 
 build_script:
 - cd ./web
+- npm cache clean
 - npm install --force
 - CALL dotnet restore
 - CALL dotnet publish --configuration Release --output bin/publish
