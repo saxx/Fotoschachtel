@@ -159,7 +159,6 @@ namespace Fotoschachtel.Common.Views
                 }
 
                 Settings.Event = _eventLabel.Text;
-                Settings.BackendUrl = _serverLabel.Text;
 
                 // clear the upload queue when switching to another event or server
                 Settings.UploadQueue = new string[0];

@@ -13,13 +13,16 @@ namespace Fotoschachtel.Controllers
     {
         private readonly MetadataService _metadataService;
         private readonly SasService _sasService;
+        private readonly ThumbnailsService _thumbnailsService;
 
         public EventController(
             [NotNull] MetadataService metadataService,
-            [NotNull] SasService sasService)
+            [NotNull] SasService sasService,
+            [NotNull] ThumbnailsService thumbnailsService)
         {
             _metadataService = metadataService;
             _sasService = sasService;
+            _thumbnailsService = thumbnailsService;
         }
 
 
@@ -49,6 +52,9 @@ namespace Fotoschachtel.Controllers
                     Event = eventMetadata.Event
                 });
             }
+
+            // make sure all thumbnails are up-to-date
+            await _thumbnailsService.RenderThumbnails(eventMetadata.ContainerName);
 
             var viewModel = new IndexViewModel(_sasService);
             return View(await viewModel.Fill(eventMetadata.Event, eventMetadata.ContainerName));
