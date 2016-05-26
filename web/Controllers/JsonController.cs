@@ -16,7 +16,7 @@ namespace Fotoschachtel.Controllers
 
         public JsonController(
             [NotNull] MetadataService metadataService,
-            [NotNull] SasService sasService, 
+            [NotNull] SasService sasService,
             [NotNull] ThumbnailsService thumbnailsService)
         {
             _metadataService = metadataService;
@@ -50,7 +50,14 @@ namespace Fotoschachtel.Controllers
 
 
         [HttpPost, Route("event/{eventId}/picture/{filename}/thumbnails")]
-        public async Task<IActionResult> RenderThumbnail([CanBeNull] string eventId, [CanBeNull] string filename)
+        public async Task<IActionResult> RenderThumbnail([NotNull] string eventId, [NotNull] string filename)
+        {
+            return await RenderThumbnail(eventId, "", filename);
+        }
+
+
+        [HttpPost, Route("event/{eventId}:{password}/picture/{filename}/thumbnails")]
+        public async Task<IActionResult> RenderThumbnail([NotNull] string eventId, [NotNull] string password, [NotNull] string filename)
         {
             var metadata = await _metadataService.GetOrLoad();
             var eventMetadata = metadata.Events.FirstOrDefault(x => x.Event.Equals(eventId, StringComparison.InvariantCultureIgnoreCase));
@@ -58,19 +65,33 @@ namespace Fotoschachtel.Controllers
             {
                 return new NotFoundResult();
             }
+            if (eventMetadata.Password != password)
+            {
+                return Unauthorized();
+            }
             await _thumbnailsService.RenderThumbnail(eventMetadata.ContainerName, filename);
             return new NoContentResult();
         }
 
-
         [HttpPost, Route("event/{eventId}/thumbnails")]
-        public async Task<IActionResult> RenderThumbnails([CanBeNull] string eventId, [CanBeNull] string filename)
+        public async Task<IActionResult> RenderThumbnails([NotNull] string eventId)
+        {
+            return await RenderThumbnails(eventId, "");
+        }
+
+
+        [HttpPost, Route("event/{eventId}:{password}/thumbnails")]
+        public async Task<IActionResult> RenderThumbnails([NotNull] string eventId, [NotNull] string password)
         {
             var metadata = await _metadataService.GetOrLoad();
             var eventMetadata = metadata.Events.FirstOrDefault(x => x.Event.Equals(eventId, StringComparison.InvariantCultureIgnoreCase));
             if (eventMetadata == null)
             {
                 return new NotFoundResult();
+            }
+            if (eventMetadata.Password != password)
+            {
+                return Unauthorized();
             }
             await _thumbnailsService.RenderThumbnails(eventMetadata.ContainerName);
             return new NoContentResult();
