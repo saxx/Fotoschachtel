@@ -1,0 +1,24 @@
+﻿@model Fotoschachtel.ViewModels.Event.CreateViewModel
+
+<h1>Event erstellen</h1>
+
+<form asp-action="Create">
+    @Html.ValidationSummary()
+
+    <p>
+        Event:<br/>
+        @Html.TextBoxFor(x => x.Event)
+    </p>
+    
+    <p>
+        Passwort:<br/>
+        @Html.TextBoxFor(x => x.Password)
+    </p>
+
+    <p>
+        E-Mail-Adresse:<br/>
+        @Html.TextBoxFor(x => x.Email)
+    </p>
+    
+    <button>Event anlegen</button>
+</form>

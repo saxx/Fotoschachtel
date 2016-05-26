@@ -1,0 +1,20 @@
+﻿@model Fotoschachtel.ViewModels.Event.UnauthorizedViewModel
+
+<h1>Der Zugriff auf das Event '@Model.Event' ist mit einem Passwort geschützt</h1>
+
+<p>Wenn du das Passwort kennst, kannst du es hier angeben um fortzufahren:</p>
+<p>
+    <input type="password" id="password" placeholder="Passwort"/>
+</p>
+<p>
+    <button id="button">Weiter</button>
+</p>
+
+@section scripts {
+    <script>
+        $("#button").click(function() {
+            var password = $("#password").val();
+            window.location = "@Url.Content("~/event")/@Model.Event:" + password;
+        });
+    </script>
+}

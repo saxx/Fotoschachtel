@@ -10,19 +10,19 @@ namespace Fotoschachtel.Common
     public static class Settings
     {
         private static ISettings AppSettings => CrossSettings.Current;
-
-
-        public static string BackendUrl
-        {
-            get { return AppSettings.GetValueOrDefault("BackendUrl", "https://fotoschachtel.sachsenhofer.com"); }
-            set { AppSettings.AddOrUpdateValue("BackendUrl", value.Trim('/')); }
-        }
-
+        
+        public const string BackendUrl = "https://fotoschachtel.sachsenhofer.com";
 
         public static string Event
         {
-            get { return AppSettings.GetValueOrDefault("Event", "sandbox"); }
+            get { return AppSettings.GetValueOrDefault("Event", ""); }
             set { AppSettings.AddOrUpdateValue("Event", value); }
+        }
+
+        public static string EventPassword
+        {
+            get { return AppSettings.GetValueOrDefault("EventPassword", ""); }
+            set { AppSettings.AddOrUpdateValue("EventPassword", value); }
         }
 
 

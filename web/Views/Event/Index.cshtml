@@ -5,7 +5,7 @@
 }
 
 <h1>
-    @Model.SasToken.EventId <small></small>
+    @Model.Event <small></small>
 </h1>
 
 <p>
@@ -222,7 +222,7 @@
                     console.log("Rendering thumbnails ...");
                     $.ajax({
                         method: "POST",
-                        url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.SasToken.EventId})"
+                        url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.Event})"
                     }).done(function () {
                         console.log("Thumbnails rendered.");
                         setTimeout(loadPictures, 1000);

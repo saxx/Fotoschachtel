@@ -6,7 +6,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
-namespace Fotoschachtel
+namespace Fotoschachtel.Services
 {
     public class SasService
     {
@@ -18,9 +18,9 @@ namespace Fotoschachtel
         }
 
 
-        public async Task<SasToken> GetSasForEvent([CanBeNull] string eventId)
+        public async Task<SasToken> GetSasForContainer([CanBeNull] string containerName)
         {
-            if (string.IsNullOrWhiteSpace(eventId))
+            if (string.IsNullOrWhiteSpace(containerName))
             {
                 throw new Exception("No eventId specified.");
             }
@@ -32,7 +32,6 @@ namespace Fotoschachtel
             var storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(_settings.AzureStorageContainer, _settings.AzureStorageKey), true);
             var storageClient = storageAccount.CreateCloudBlobClient();
 
-            var containerName = GetContainerName(eventId);
             var container = storageClient.GetContainerReference(containerName);
             await container.CreateIfNotExistsAsync();
 
@@ -56,7 +55,6 @@ namespace Fotoschachtel
 
             return new SasToken
             {
-                EventId = eventId,
                 SasQueryString = sas,
                 ContainerUrl = container.Uri.ToString(),
                 SasExpiration = sasExpiration
@@ -81,7 +79,6 @@ namespace Fotoschachtel
         {
             public string ContainerUrl { get; set; }
             public string SasQueryString { get; set; }
-            public string EventId { get; set; }
             public DateTime SasExpiration { get; set; }
 
             public string SasListUrl => ContainerUrl + SasQueryString + "&comp=list&restype=container&prefix=thumbnails-small";

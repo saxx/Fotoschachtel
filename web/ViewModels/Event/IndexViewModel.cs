@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Fotoschachtel.Services;
 using JetBrains.Annotations;
 
 namespace Fotoschachtel.ViewModels.Event
@@ -13,12 +14,14 @@ namespace Fotoschachtel.ViewModels.Event
         }
 
 
-        public async Task<IndexViewModel> Fill([CanBeNull] string eventId)
+        public async Task<IndexViewModel> Fill([NotNull] string eventName, [NotNull] string containerName)
         {
-            SasToken = await _sasService.GetSasForEvent(eventId);
+            Event = eventName;
+            SasToken = await _sasService.GetSasForContainer(containerName);
             return this;
         }
         
         public SasService.SasToken SasToken { get; set; }
+        public string Event { get; set; }
     }
 }

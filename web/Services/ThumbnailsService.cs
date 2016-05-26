@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System.Linq;
-using Microsoft.Extensions.Options;
 
-namespace Fotoschachtel
+namespace Fotoschachtel.Services
 {
     public class ThumbnailsService
     {
@@ -28,7 +28,6 @@ namespace Fotoschachtel
         {
             if (_container == null)
             {
-
                 var storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(_settings.AzureStorageContainer, _settings.AzureStorageKey), true);
                 var storageClient = storageAccount.CreateCloudBlobClient();
                 var containerName = SasService.GetContainerName(eventId);
@@ -38,18 +37,18 @@ namespace Fotoschachtel
         }
 
 
-        public async Task RenderThumbnails([CanBeNull] string eventId)
+        public async Task RenderThumbnails([CanBeNull] string containerName)
         {
-            if (string.IsNullOrWhiteSpace(eventId))
+            if (string.IsNullOrWhiteSpace(containerName))
             {
-                throw new ArgumentException("No event id specified.");
+                throw new ArgumentException("No container name id specified.");
             }
             if (string.IsNullOrWhiteSpace(_settings.AzureStorageContainer) || string.IsNullOrWhiteSpace(_settings.AzureStorageKey))
             {
                 throw new Exception("Azure storage configuration missing");
             }
 
-            var container = GetContainer(eventId);
+            var container = GetContainer(containerName);
 
             var existingFiles = container.ListBlobs(useFlatBlobListing: true).OfType<CloudBlockBlob>().Select(b => b.Name).ToList();
             var existingPrimaryFiles = existingFiles.Where(x => !x.StartsWith("thumbnail")).ToList();
@@ -60,24 +59,24 @@ namespace Fotoschachtel
 
                 if (!smallThumbnailExists || !mediumThumbnailExists)
                 {
-                    await RenderThumbnail(eventId, f);
+                    await RenderThumbnail(containerName, f);
                 }
             }
         }
 
 
-        public async Task RenderThumbnail([CanBeNull] string eventId, [CanBeNull] string fileName)
+        public async Task RenderThumbnail([CanBeNull] string containerName, [CanBeNull] string fileName)
         {
-            if (string.IsNullOrWhiteSpace(eventId) || string.IsNullOrWhiteSpace(fileName))
+            if (string.IsNullOrWhiteSpace(containerName) || string.IsNullOrWhiteSpace(fileName))
             {
-                throw new ArgumentException("No event id or file name specified.");
+                throw new ArgumentException("No container name or file name specified.");
             }
             if (string.IsNullOrWhiteSpace(_settings.AzureStorageContainer) || string.IsNullOrWhiteSpace(_settings.AzureStorageKey))
             {
                 throw new Exception("Azure storage configuration missing");
             }
 
-            var container = GetContainer(eventId);
+            var container = GetContainer(containerName);
 
             var sourceBlob = container.GetBlockBlobReference(fileName);
 

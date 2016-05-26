@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Fotoschachtel.Services;
 using Fotoschachtel.ViewModels.Event;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,8 +42,8 @@ namespace Fotoschachtel
 
             //services.AddHaufwerk("Fotoschachtel", "http://haufwerk.sachsenhofer.com");
             services.AddTransient<SasService>();
+            services.AddTransient<MetadataService>();
             services.AddTransient<ThumbnailsService>();
-            services.AddTransient<IndexViewModel>();
 
             services.AddMvc();
         }

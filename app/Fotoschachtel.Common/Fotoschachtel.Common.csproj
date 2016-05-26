@@ -47,6 +47,7 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Controls\PinchToZoomContainer.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Views\SelectEventPage.cs" />
     <Compile Include="Views\SettingsPage.cs" />
     <Compile Include="ThumbnailsService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

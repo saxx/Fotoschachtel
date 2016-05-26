@@ -1,0 +1,7 @@
+﻿@model Fotoschachtel.ViewModels.Event.NotFoundViewModel
+
+<h1>Event '@Model.Event' existiert nicht</h1>
+
+<p>Bitte überprüfe den Namen des Events.</p>
+
+<a href="@Url.Action("Create", new { @event = Model.Event })" class="btn btn-default">Event erstellen</a>
