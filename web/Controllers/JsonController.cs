@@ -24,7 +24,7 @@ namespace Fotoschachtel.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GetStorageUrl([NotNull] string eventId, [CanBeNull] string password)
         {
             var metadata = await _metadataService.GetOrLoad();
