@@ -17,7 +17,7 @@ namespace Fotoschachtel.ViewModels.Event
         public async Task<IndexViewModel> Fill([NotNull] string eventName, [NotNull] string containerName)
         {
             Event = eventName;
-            SasToken = await _sasService.GetSasForContainer(containerName);
+            SasToken = await _sasService.GetSasForContainer(eventName, containerName);
             return this;
         }
         

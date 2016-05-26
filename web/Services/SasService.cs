@@ -18,11 +18,15 @@ namespace Fotoschachtel.Services
         }
 
 
-        public async Task<SasToken> GetSasForContainer([CanBeNull] string containerName)
+        public async Task<SasToken> GetSasForContainer([CanBeNull] string @event, [CanBeNull] string containerName)
         {
+            if (string.IsNullOrWhiteSpace(@event))
+            {
+                throw new Exception("No event specified.");
+            }
             if (string.IsNullOrWhiteSpace(containerName))
             {
-                throw new Exception("No eventId specified.");
+                throw new Exception("No container name specified.");
             }
             if (string.IsNullOrWhiteSpace(_settings.AzureStorageContainer) || string.IsNullOrWhiteSpace(_settings.AzureStorageKey))
             {
@@ -55,6 +59,7 @@ namespace Fotoschachtel.Services
 
             return new SasToken
             {
+                EventId = @event,
                 SasQueryString = sas,
                 ContainerUrl = container.Uri.ToString(),
                 SasExpiration = sasExpiration
@@ -77,6 +82,7 @@ namespace Fotoschachtel.Services
 
         public class SasToken
         {
+            public string EventId { get; set; }
             public string ContainerUrl { get; set; }
             public string SasQueryString { get; set; }
             public DateTime SasExpiration { get; set; }

@@ -45,7 +45,7 @@ namespace Fotoschachtel.Controllers
             {
                 return Unauthorized();
             }
-            return new JsonResult(await _sasService.GetSasForContainer(eventMetadata.ContainerName));
+            return new JsonResult(await _sasService.GetSasForContainer(eventMetadata.Event, eventMetadata.ContainerName));
         }
 
 
