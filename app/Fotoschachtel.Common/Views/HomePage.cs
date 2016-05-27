@@ -10,7 +10,6 @@ namespace Fotoschachtel.Common.Views
 {
     public class HomePage : ContentPage
     {
-        private SettingsPage _settingsPage;
         private Image _settingsButton;
 
         public HomePage()
@@ -31,7 +30,7 @@ namespace Fotoschachtel.Common.Views
         {
             _settingsButton = Controls.Image("settings.png", 40, async image =>
             {
-                await Navigation.PushModalAsync(_settingsPage = _settingsPage ?? new SettingsPage(this), true);
+                await Navigation.PushModalAsync(new SettingsPage(Refresh), true);
             });
             layout.Children.Add(_settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
         }
@@ -160,24 +159,24 @@ namespace Fotoschachtel.Common.Views
 
                 // listen for property changes, because we need to know when loading is finished
                 image.PropertyChanged += (sender, e) =>
-                {
-                    if (e.PropertyName == "IsLoading")
-                    {
-                        var senderImage = (Image)sender;
-                        if (!senderImage.IsLoading)
-                        {
-                            _imagesToLoadCount--;
-                        }
-                    }
-                };
+                                {
+                                    if (e.PropertyName == "IsLoading")
+                                    {
+                                        var senderImage = (Image)sender;
+                                        if (!senderImage.IsLoading)
+                                        {
+                                            _imagesToLoadCount--;
+                                        }
+                                    }
+                                };
 
                 // listen for tap events on pictures
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 var pictureIndexClosure = pictureIndex;
                 tapGestureRecognizer.Tapped += async (s, e) =>
-                {
-                    await OpenPicture(pictureIndexClosure);
-                };
+                                {
+                                    await OpenPicture(pictureIndexClosure);
+                                };
                 image.GestureRecognizers.Add(tapGestureRecognizer);
 
                 // add the image to the grid
@@ -285,8 +284,8 @@ namespace Fotoschachtel.Common.Views
                     }
                     catch
                     {
-                        // do nothing here
-                    }
+                // do nothing here
+            }
                 });
             }
         }

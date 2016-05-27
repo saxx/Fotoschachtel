@@ -14,7 +14,7 @@ namespace Fotoschachtel.Common
             {
                 using (var httpClient = new HttpClient(new NativeMessageHandler()))
                 {
-                    var response = await httpClient.PostAsync($"{Settings.BackendUrl}/json/event/{Settings.Event}/thumbnails", null);
+                    var response = await httpClient.PostAsync(Settings.ThumbnailsUri, null);
                     response.EnsureSuccessStatusCode();
                 }
             }

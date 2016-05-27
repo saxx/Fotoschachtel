@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ModernHttpClient;
 using Xamarin.Forms;
 
 namespace Fotoschachtel.Common.Views
 {
     public class SettingsPage : ContentPage
     {
-        private readonly HomePage _parentPage;
-        private Label _eventLabel;
-        private Label _serverLabel;
-        private readonly Image _saveButton;
+        private readonly Action _closeCallback;
 
-        public SettingsPage(HomePage parentPage)
+        public SettingsPage(Action closeCallback)
         {
-            _parentPage = parentPage;
+            _closeCallback = closeCallback;
 
             BackgroundColor = Colors.BackgroundColor;
             Padding = new Thickness(10);
@@ -24,15 +18,6 @@ namespace Fotoschachtel.Common.Views
             {
                 await Navigation.PopModalAsync(true);
             });
-            _saveButton = Controls.Image("Fotoschachtel.Common.Images.save.png", 40, 40, async image =>
-            {
-                if (await Save())
-                {
-                    await Navigation.PopModalAsync(true);
-                    _parentPage.Refresh();
-                }
-            });
-            _saveButton.IsVisible = false;
 
             var layout = new AbsoluteLayout();
             layout.Children.Add(new ScrollView
@@ -41,7 +26,6 @@ namespace Fotoschachtel.Common.Views
                 Content = BuildContent()
             }, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
             layout.Children.Add(backButton, new Rectangle(0, 0, 40, 40));
-            layout.Children.Add(_saveButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
 
             Content = layout;
         }
@@ -49,128 +33,78 @@ namespace Fotoschachtel.Common.Views
 
         private StackLayout BuildContent()
         {
-            var websiteButton = new Button
+            #region Logo
+            var logoImage = Controls.Image("logo", 200);
+            logoImage.HorizontalOptions = LayoutOptions.Center;
+            #endregion
+
+            #region Event
+
+            var eventText = new FormattedString();
+            eventText.Spans.Add(new Span { Text = "Fotoschachtel ist derzeit mit dem Event " });
+            eventText.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
+            eventText.Spans.Add(new Span { Text = " verknüpft." });
+            var eventLabel = Controls.Label(eventText);
+            var eventButton = Controls.Button("Event ändern", async button =>
             {
-                TextColor = Colors.BackgroundColor,
-                BackgroundColor = Colors.FontColor,
-                Text = "Website von Fotoschachtel öffnen"
-            };
-            websiteButton.Clicked += (sender, args) =>
+                var selectEventPage = new SelectEventPage(async () =>
+                {
+                    _closeCallback.Invoke();
+                    await Navigation.PopModalAsync();
+                });
+                await Navigation.PushModalAsync(selectEventPage);
+            });
+
+            #endregion
+
+            #region Copyright
+
+            var authorLabel = Controls.Label("Fotoschachtel ist ein Hobbyprojekt von Hannes 'saxx' Sachsenhofer");
+            authorLabel.HorizontalTextAlignment = TextAlignment.Center;
+            authorLabel.FontAttributes = FontAttributes.Bold;
+            var copyrightLabel = Controls.Label("Du darfst Fotoschachtel gerne benutzen, so viel du magst; "
+                       + "aber bitte denk daran: Fotoschachtel wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung "
+                       + "für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. "
+                       + "In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, "
+                       + "ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden.");
+            var websiteButton = Controls.Button("Website von Fotoschachtel öffnen", button =>
             {
                 Device.OpenUri(new Uri("https://fotoschachtel.sachsenhofer.com"));
-            };
-
-            _eventLabel = Controls.LabelMonospace(Settings.Event, async label =>
-            {
-                var result = await Navigation.Prompt("Event", "Bitte gib den Namen des Events an, mit dem du Fotoschachtel verwenden möchtest:");
-                if (result != null)
-                {
-                    label.Text = result;
-                }
-                EnableDisableSaveButton();
             });
 
-            _serverLabel = Controls.LabelMonospace(Settings.BackendUrl, async label =>
-            {
-                var result = await Navigation.Prompt("Server", "Bitte gib die Adresse des Servers an, mit dem du Fotoschachtel verwenden möchtest:");
-                if (result != null)
-                {
-                    label.Text = result;
-                }
-                EnableDisableSaveButton();
-            });
+            #endregion
 
             return new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                Spacing = 60,
+                Spacing = 40,
                 Children =
                 {
+                    logoImage,
                     new StackLayout
                     {
                         VerticalOptions = LayoutOptions.Start,
+                        Spacing = 5,
                         Children =
                         {
-                            new StackLayout
-                            {
-                                Spacing = 0,
-                                Children  =
-                                {
-                                    Controls.Label("Event:"),
-                                    _eventLabel,
-                                    Controls.Separator(),
-                                    Controls.Label("Server:"),
-                                    _serverLabel,
-                                }
-                            }
+                            eventLabel,
+                            eventButton
                         }
                     },
                     new StackLayout
                     {
-                        VerticalOptions = LayoutOptions.StartAndExpand
-                    },
-                    new StackLayout
-                    {
                         VerticalOptions = LayoutOptions.End,
-                        Spacing = 10,
+                        Spacing = 5,
                         Children =
                         {
-                            new Label
-                            {
-                                FontAttributes = FontAttributes.Bold,
-                                HorizontalTextAlignment = TextAlignment.Center,
-                                TextColor = Colors.FontColor,
-                                Text = "Fotoschachtel ist ein Hobbyprojekt von\nHannes 'saxx' Sachsenhofer.",
-                            },
-                            new Label
-                            {
-                                TextColor = Colors.FontColor,
-                                Text =
-                                    "Du darfst Fotoschachtel gerne benutzen, so viel du magst; "
-                                    + "aber bitte denk daran: Fotoschachtel wird ohne jede ausdrückliche oder implizierte Garantie bereitgestellt, einschließlich der Garantie zur Benutzung "
-                                    + "für den vorgesehenen oder einem bestimmten Zweck sowie jeglicher Rechtsverletzung, jedoch nicht darauf beschränkt. "
-                                    + "In keinem Fall ist der Autor oder Copyright-Inhaber für jeglichen Schaden oder sonstige Ansprüche haftbar zu machen, "
-                                    + "ob infolge der Erfüllung eines Vertrages, eines Deliktes oder anders im Zusammenhang mit der Software oder sonstiger Verwendung der Software entstanden."
-                            },
+                            authorLabel,
+                            copyrightLabel,
                             websiteButton
                         }
                     }
                 }
             };
         }
-
-        private async Task<bool> Save()
-        {
-            if (Settings.BackendUrl != _serverLabel.Text || Settings.Event != _eventLabel.Text)
-            {
-                // check if we can access a server with these new settings
-                try
-                {
-                    using (var httpClient = new HttpClient(new NativeMessageHandler()))
-                    {
-                        var response = await httpClient.GetAsync($"{_serverLabel.Text.Trim('/')}/json/event/{_eventLabel.Text}");
-                        response.EnsureSuccessStatusCode();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("", "Es gibt ein Problem mit den Event- oder Servereinstellungen: " + ex.Message, "Alles klar");
-                    return false;
-                }
-
-                Settings.Event = _eventLabel.Text;
-
-                // clear the upload queue when switching to another event or server
-                Settings.UploadQueue = new string[0];
-            }
-
-            return true;
-        }
-
-
-        private void EnableDisableSaveButton()
-        {
-            _saveButton.IsVisible = Settings.Event != _eventLabel.Text || Settings.BackendUrl != _serverLabel.Text;
-        }
     }
 }
+

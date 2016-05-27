@@ -10,8 +10,7 @@ namespace Fotoschachtel.Common
     public static class Settings
     {
         private static ISettings AppSettings => CrossSettings.Current;
-        
-        public const string BackendUrl = "https://fotoschachtel.sachsenhofer.com";
+        private static readonly Uri BackendUri = new Uri("https://fotoschachtel.sachsenhofer.com");
 
         public static string Event
         {
@@ -23,6 +22,31 @@ namespace Fotoschachtel.Common
         {
             get { return AppSettings.GetValueOrDefault("EventPassword", ""); }
             set { AppSettings.AddOrUpdateValue("EventPassword", value); }
+        }
+
+        public static Uri SasTokenUri => GetSasTokenUri(Event, EventPassword);
+
+
+        public static Uri GetSasTokenUri(string @event, string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return new Uri($"{BackendUri}json/event/{@event}");
+            }
+            return new Uri($"{BackendUri}json/event/{@event}:{password}");
+        }
+
+
+        public static Uri ThumbnailsUri => GetThumbnailsUri(Event, EventPassword);
+
+
+        public static Uri GetThumbnailsUri(string @event, string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return new Uri($"{BackendUri}json/event/{@event}/thumbnails");
+            }
+            return new Uri($"{BackendUri}json/event/{@event}:{password}/thumbnails");
         }
 
 
@@ -74,7 +98,7 @@ namespace Fotoschachtel.Common
                 string response;
                 try
                 {
-                    response = await httpClient.GetStringAsync($"{BackendUrl}/json/event/{Event}");
+                    response = await httpClient.GetStringAsync(SasTokenUri);
                 }
                 catch (Exception ex)
                 {

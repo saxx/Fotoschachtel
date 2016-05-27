@@ -3,6 +3,8 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Fotoschachtel.Common;
+using HockeyApp;
+using HockeyApp.Metrics;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Xamarin.Forms;
 
@@ -19,9 +21,19 @@ namespace Fotoschachtel.Droid
 
             base.OnCreate(bundle);
 
+            CrashManager.Register(this, "fdf7a0b02e0249b78ebe117e5003b5f2");
+            MetricsManager.Register(this, Application, "fdf7a0b02e0249b78ebe117e5003b5f2");
+
             Forms.Init(this, bundle);
             PullToRefreshLayoutRenderer.Init();
-            LoadApplication(new Fotoschachtel.Common.App());
+            LoadApplication(new App());
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            CrashManager.Register(this, "fdf7a0b02e0249b78ebe117e5003b5f2");
+            MetricsManager.Register(this, Application, "fdf7a0b02e0249b78ebe117e5003b5f2");
         }
     }
 }

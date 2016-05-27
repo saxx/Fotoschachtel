@@ -32,6 +32,15 @@ namespace Fotoschachtel.Common
             return Label(text, Fonts.Normal, onClick);
         }
 
+
+        public static Label Label(FormattedString text)
+        {
+            var label = Label("");
+            label.FormattedText = text;
+            return label;
+        }
+
+
         public static Label LabelMonospace(string text, Action<Label> onClick = null)
         {
             return Label(text, Fonts.Monospace, onClick);
@@ -99,6 +108,13 @@ namespace Fotoschachtel.Common
         {
             return Entry(text, Fonts.Monospace);
         }
+
+        public static Entry Password(string text)
+        {
+            var entry = Entry(text, Fonts.Normal);
+            entry.IsPassword = true;
+            return entry;
+        }
         #endregion
 
 
@@ -108,6 +124,10 @@ namespace Fotoschachtel.Common
             if (!resourceId.Contains(".Images."))
             {
                 resourceId = "Fotoschachtel.Common.Images." + resourceId;
+                if (!resourceId.EndsWith(".png"))
+                {
+                    resourceId += ".png";
+                }
             }
 
             var image = new Image
