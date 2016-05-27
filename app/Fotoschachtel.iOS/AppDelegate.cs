@@ -1,5 +1,6 @@
 ﻿using Fotoschachtel.Common;
 using Foundation;
+using HockeyApp;
 using Refractored.XamForms.PullToRefresh.iOS;
 using UIKit;
 using Xamarin.Forms;
@@ -12,6 +13,11 @@ namespace Fotoschachtel.Ios
     {
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            var manager = BITHockeyManager.SharedHockeyManager;
+            manager.Configure("f591bd57701948d780b60965fea8c701");
+            manager.DisableMetricsManager = false;
+            manager.StartManager();
+
             PullToRefreshLayoutRenderer.Init();
 
             var uploader = new UploaderTask();
