@@ -43,7 +43,6 @@
     <Compile Include="ITemporaryPictureStorage.cs" />
     <Compile Include="Views\GalleryPage.cs" />
     <Compile Include="Views\HomePage.cs" />
-    <Compile Include="Controls\Prompt.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Controls\PinchToZoomContainer.cs" />
     <Compile Include="Settings.cs" />
