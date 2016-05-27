@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ModernHttpClient;
@@ -11,6 +12,26 @@ namespace Fotoschachtel.Common
     {
         private static ISettings AppSettings => CrossSettings.Current;
         private static readonly Uri BackendUri = new Uri("https://fotoschachtel.sachsenhofer.com");
+
+        public static DateTime? LastRunDateTime
+        {
+            get
+            {
+                var value = AppSettings.GetValueOrDefault("LastRunDateTime", "");
+                if (string.IsNullOrEmpty(value))
+                {
+                    return null;
+                }
+                return DateTime.Parse(value, CultureInfo.InvariantCulture);
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    AppSettings.AddOrUpdateValue("LastRunDateTime", value.Value.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+        }
 
         public static string Event
         {

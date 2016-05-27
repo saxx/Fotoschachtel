@@ -36,10 +36,10 @@ namespace Fotoschachtel.Common.Views
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
                     Text = GetRelativeDateText(picture.DateTime),
-                    BackgroundColor = Color.Transparent,
+                    BackgroundColor = Color.Black,
                     TextColor = Color.White
                 };
-                var closeButton = Controls.Image("cancel.png", 40, async clickedButton =>
+                var closeButton = Controls.Image("cancel.png", 25, async clickedButton =>
                 {
                     await Navigation.PopModalAsync(true);
                 });
@@ -47,7 +47,7 @@ namespace Fotoschachtel.Common.Views
                 imageContainer.Content = image;
                 layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
                 layout.Children.Add(label, new Rectangle(0, 0, 1, 25), AbsoluteLayoutFlags.WidthProportional);
-                layout.Children.Add(closeButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
+                layout.Children.Add(closeButton, new Rectangle(1, 0, 25, 25), AbsoluteLayoutFlags.XProportional);
 
                 page.Content = layout;
                 Children.Add(page);

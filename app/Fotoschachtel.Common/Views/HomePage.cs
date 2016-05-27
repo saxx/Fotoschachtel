@@ -15,13 +15,18 @@ namespace Fotoschachtel.Common.Views
         public HomePage()
         {
             BackgroundColor = Colors.BackgroundColor;
-            Padding = new Thickness(0);
+            Padding = new Thickness(1);
 
             var layout = new AbsoluteLayout();
             BuildMiddleContent(layout);
             BuildTopContent(layout);
             BuildBottomContent(layout);
             Content = layout;
+
+            Appearing += async (sender, args) =>
+            {
+                await ShowLaunchMessage();
+            };
         }
 
 
@@ -284,8 +289,8 @@ namespace Fotoschachtel.Common.Views
                     }
                     catch
                     {
-                // do nothing here
-            }
+                        // do nothing here
+                    }
                 });
             }
         }
@@ -309,5 +314,14 @@ namespace Fotoschachtel.Common.Views
         }
         #endregion
 
+
+        private async Task ShowLaunchMessage()
+        {
+            if (Settings.LastRunDateTime == null)
+            {
+                await DisplayAlert("Willkommen", "Das scheint dein erstes Mal bei Fotoschachtel zu sein.\n\nZum Start haben wir dich zum Ausprobieren mit einem öffentlichen Event namens 'sandbox' verknüpft.\n\nDu kannst das jederzeit in den Einstellungen ändern und einem richtigen Event beitreten.", "Alles klar");
+            }
+            Settings.LastRunDateTime = DateTime.UtcNow;
+        }
     }
 }
