@@ -8,7 +8,7 @@ using HockeyApp.Metrics;
 
 namespace Fotoschachtel.Droid
 {
-    [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
+    [Activity(Label = "Fotoschachtel", Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
     public class SplashActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -22,6 +22,8 @@ namespace Fotoschachtel.Droid
         protected override void OnResume()
         {
             base.OnResume();
+            CrashManager.Register(this, "fdf7a0b02e0249b78ebe117e5003b5f2");
+            MetricsManager.Register(this, Application, "fdf7a0b02e0249b78ebe117e5003b5f2");
 
             Task startupWork = new Task(() =>
             {

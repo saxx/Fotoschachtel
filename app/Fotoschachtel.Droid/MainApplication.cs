@@ -2,6 +2,8 @@ using System;
 using Android.App;
 using Android.OS;
 using Android.Runtime;
+using HockeyApp;
+using HockeyApp.Metrics;
 using Plugin.CurrentActivity;
 using Application = Android.App.Application;
 

@@ -48,40 +48,40 @@ namespace Fotoschachtel.Droid
             }
             Settings.UploadQueue = Settings.UploadQueue.Skip(1).ToArray();
 
-            try
+            using (var nextFile = DependencyService.Get<ITemporaryPictureStorage>().Load(nextFileName))
             {
-                using (var nextFile = DependencyService.Get<ITemporaryPictureStorage>().Load(nextFileName))
+                var sasToken = await Settings.GetSasToken();
+
+                try
                 {
-                    var sasToken = await Settings.GetSasToken();
-
-                    try
+                    using (var httpClient = new HttpClient(new NativeMessageHandler()))
                     {
-                        using (var httpClient = new HttpClient(new NativeMessageHandler()))
-                        {
-                            var content = new StreamContent(nextFile);
-                            content.Headers.Add("x-ms-blob-type", "BlockBlob");
-                            var response = await httpClient.PutAsync($"{sasToken.ContainerUrl}/{Guid.NewGuid()}{sasToken.SasQueryString}", content);
-                            response.EnsureSuccessStatusCode();
+                        var content = new StreamContent(nextFile);
+                        content.Headers.Add("x-ms-blob-type", "BlockBlob");
+                        var response = await httpClient.PutAsync($"{sasToken.ContainerUrl}/{Guid.NewGuid()}{sasToken.SasQueryString}", content);
+                        response.EnsureSuccessStatusCode();
 
+                        try
+                        {
                             await ThumbnailsService.UpdateThumbnails();
                         }
-                    }
-                    catch
-                    {
-                        // do nothing here, we cannot upload the file
-                        // but we want to retry
-                        Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { nextFileName }).ToArray();
-                        return;
+                        catch
+                        {
+                            // ignore if the thumbnails were not updated.
+                            // they will be updated the next time anyways 
+                        }
                     }
                 }
+                catch
+                {
+                    // do nothing here, we cannot upload the file
+                    // but we want to retry
+                    Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { nextFileName }).ToArray();
+                    return;
+                }
+            }
 
-                DependencyService.Get<ITemporaryPictureStorage>().Delete(nextFileName);
-            }
-            catch
-            {
-                // do nothing here, we cannot open or delete the file
-                // we want it removed from the queue
-            }
+            DependencyService.Get<ITemporaryPictureStorage>().Delete(nextFileName);
         }
     }
 }

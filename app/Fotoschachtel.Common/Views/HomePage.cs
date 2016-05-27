@@ -278,13 +278,9 @@ namespace Fotoschachtel.Common.Views
                 {
                     try
                     {
-                        if (_settingsButton != null)
+                        while (_settingsButton != null && (IsLoading || _imagesToLoadCount > 0 || _uploadsPending > 0))
                         {
                             await _settingsButton.RelRotateTo(7, 30, Easing.Linear);
-                            if (IsLoading || _imagesToLoadCount > 0 || _uploadsPending > 0)
-                            {
-                                UpdateActivityIndicator();
-                            }
                         }
                     }
                     catch
