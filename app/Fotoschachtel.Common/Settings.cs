@@ -35,7 +35,7 @@ namespace Fotoschachtel.Common
 
         public static string Event
         {
-            get { return AppSettings.GetValueOrDefault("Event", ""); }
+            get { return AppSettings.GetValueOrDefault("Event", "sandbox"); }
             set { AppSettings.AddOrUpdateValue("Event", value); }
         }
 
