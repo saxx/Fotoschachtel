@@ -138,6 +138,13 @@
     <CodesignResourceRules />
     <CodesignExtraArgs />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhoneSimulator'">
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignProvision>de4bac9e-a3fb-4d67-923d-cacfa0212674</CodesignProvision>
+    <CodesignEntitlements />
+    <CodesignResourceRules />
+    <CodesignExtraArgs />
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
@@ -223,55 +230,10 @@
     <ITunesArtwork Include="iTunesArtwork%402x" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Gallery%403x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Gallery.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Gallery%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Camera%403x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Camera.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Camera%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Library%403x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Library.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Library%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Settings%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Settings%403x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Settings.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BundleResource Include="Resources\Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Photo%403x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Photo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Photo%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fotoschachtel.Common\Fotoschachtel.Common.csproj">

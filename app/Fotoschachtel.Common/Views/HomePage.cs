@@ -15,7 +15,7 @@ namespace Fotoschachtel.Common.Views
         public HomePage()
         {
             BackgroundColor = Colors.BackgroundColor;
-            Padding = new Thickness(1);
+            Padding = new Thickness(0);
 
             var layout = new AbsoluteLayout();
             BuildMiddleContent(layout);
