@@ -13,12 +13,10 @@ namespace Fotoschachtel.Ios
 
         public override void DidFinishEventsForBackgroundSession(NSUrlSession session)
         {
-            MessagingCenter.Send(new UploadFinishedMessage(), "UploadFinished");
         }
 
         public override void DidSendBodyData(NSUrlSession session, NSUrlSessionTask task, long bytesSent, long totalBytesSent, long totalBytesExpectedToSend)
         {
-            MessagingCenter.Send(new UploadFinishedMessage(), "UploadFinished");
         }
     }
 }
