@@ -15,14 +15,10 @@ namespace Fotoschachtel.Common
             MessagingCenter.Send(new StartUploadMessage(), "StartUpload");
         }
 
-        protected override void OnSleep()
-        {
-        }
-
         protected override void OnResume()
         {
             MessagingCenter.Send(new StartUploadMessage(), "StartUpload");
-            ((HomePage)MainPage).Refresh();
+            ((HomePage)MainPage).Refresh(false);
         }
     }
 }

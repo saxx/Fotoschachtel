@@ -4,14 +4,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ModernHttpClient;
 using Xamarin.Forms;
+using ZXing.Net.Mobile.Forms;
 
 namespace Fotoschachtel.Common.Views
 {
     public class SelectEventPage : ContentPage
     {
         private readonly Action _closeCallback;
-        private readonly Entry _eventEntry;
-        private readonly Entry _passwordEntry;
 
         public SelectEventPage(Action closeCallback)
         {
@@ -20,6 +19,67 @@ namespace Fotoschachtel.Common.Views
             BackgroundColor = Colors.BackgroundColor;
             Padding = new Thickness(10);
 
+            var isFirstAppearance = true;
+            Appearing += async (sender, args) =>
+            {
+                if (!isFirstAppearance)
+                {
+                    return;
+                }
+                isFirstAppearance = false;
+
+                var header = Settings.LastRunDateTime.HasValue ? "Code bei der Hand?" : "Willkommen bei Fotoschachtel!";
+                var alertResult = await DisplayAlert(header, "Du kannst direkt einen Fotoschachtel-Code einscannen, um Fotoschachtel gleich mit dem dazugehörigen Event zu verknüpfen.\n\n" +
+                                                     "Oder du kannst manuell ein Event und dessen Passwort eintippen. Dann kannst du auch ein neues Event erstellen, wenn du möchtest.", "Manuell eintippen", "Code scannen");
+
+                if (!alertResult)
+                {
+                    await UseCodeScanner();
+                }
+                else
+                {
+                    UseForm();
+                }
+            };
+        }
+
+        private async Task UseCodeScanner()
+        {
+            var scanPage = new ZXingScannerPage
+            {
+                DefaultOverlayBottomText = "",
+                DefaultOverlayTopText = "",
+            };
+
+            scanPage.OnScanResult += (result) =>
+            {
+                scanPage.IsScanning = false;
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PopModalAsync();
+
+                    if (!string.IsNullOrWhiteSpace(result.Text) && result.Text.Length > 5 && result.Text.Contains(":"))
+                    {
+                        var a = result.Text.Split(':');
+                        if (await Save(a[0], a[1]))
+                        {
+                            _closeCallback.Invoke();
+                            await Navigation.PopModalAsync();
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlert("Oje", "Das scheint kein gültiger Fotoschachtel-Code zu sein.", "Achso");
+                    }
+                });
+            };
+
+            await Navigation.PushModalAsync(scanPage);
+        }
+
+
+        private void UseForm()
+        {
             var layout = new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand
@@ -35,8 +95,8 @@ namespace Fotoschachtel.Common.Views
 
             #region Input fields
 
-            _eventEntry = Controls.Entry(Settings.Event);
-            _passwordEntry = Controls.Password("");
+            var eventEntry = Controls.Entry(Settings.Event);
+            var passwordEntry = Controls.Password("");
 
             layout.Children.Add(new StackLayout
             {
@@ -44,7 +104,7 @@ namespace Fotoschachtel.Common.Views
                 Children =
                 {
                     Controls.Label("Name des Events:"),
-                    _eventEntry
+                    eventEntry
                 }
             });
 
@@ -54,7 +114,7 @@ namespace Fotoschachtel.Common.Views
                 Children =
                 {
                     Controls.Label("Passwort für das Event:"),
-                    _passwordEntry
+                    passwordEntry
                 }
             });
             #endregion
@@ -63,7 +123,7 @@ namespace Fotoschachtel.Common.Views
 
             var okButton = Controls.Image("save.png", 40, async image =>
             {
-                if (await Save())
+                if (await Save(eventEntry.Text, passwordEntry.Text))
                 {
                     _closeCallback.Invoke();
                     await Navigation.PopModalAsync();
@@ -99,9 +159,10 @@ namespace Fotoschachtel.Common.Views
             Content = layout;
         }
 
-        private async Task<bool> Save()
+
+        private async Task<bool> Save(string @event, string password)
         {
-            if (string.IsNullOrWhiteSpace(_eventEntry.Text))
+            if (string.IsNullOrWhiteSpace(@event))
             {
                 return false;
             }
@@ -111,7 +172,7 @@ namespace Fotoschachtel.Common.Views
             {
                 using (var httpClient = new HttpClient(new NativeMessageHandler()))
                 {
-                    var response = await httpClient.GetAsync(Settings.GetSasTokenUri(_eventEntry.Text, _passwordEntry.Text));
+                    var response = await httpClient.GetAsync(Settings.GetSasTokenUri(@event, password));
 
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -132,8 +193,8 @@ namespace Fotoschachtel.Common.Views
                 return false;
             }
 
-            Settings.Event = _eventEntry.Text;
-            Settings.EventPassword = _passwordEntry.Text;
+            Settings.Event = @event;
+            Settings.EventPassword = password;
 
             // clear the upload queue when switching to another event or server
             Settings.UploadQueue = new string[0];

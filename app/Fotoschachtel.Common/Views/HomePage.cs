@@ -17,16 +17,16 @@ namespace Fotoschachtel.Common.Views
             BackgroundColor = Colors.BackgroundColor;
             Padding = new Thickness(0);
 
+            Appearing += async (sender, args) =>
+            {
+                await ShowLaunchMessage();
+            };
+
             var layout = new AbsoluteLayout();
             BuildMiddleContent(layout);
             BuildTopContent(layout);
             BuildBottomContent(layout);
             Content = layout;
-
-            Appearing += async (sender, args) =>
-            {
-                await ShowLaunchMessage();
-            };
         }
 
 
@@ -35,7 +35,7 @@ namespace Fotoschachtel.Common.Views
         {
             _settingsButton = Controls.Image("settings.png", 40, async image =>
             {
-                await Navigation.PushModalAsync(new SettingsPage(Refresh), true);
+                await Navigation.PushModalAsync(new SettingsPage(() => Refresh(true)), true);
             });
             layout.Children.Add(_settingsButton, new Rectangle(1, 0, 40, 40), AbsoluteLayoutFlags.XProportional);
         }
@@ -73,11 +73,11 @@ namespace Fotoschachtel.Common.Views
             _pullToRefreshLayout.RefreshCommand = new Command(() =>
             {
                 _pullToRefreshLayout.IsRefreshing = true;
-                Refresh();
+                Refresh(false);
             }, () => !IsLoading);
             layout.Children.Add(_pullToRefreshLayout, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
 
-            Refresh();
+            Refresh(false);
 
             Appearing += (sender, args) =>
             {
@@ -86,11 +86,116 @@ namespace Fotoschachtel.Common.Views
         }
 
 
-        public void Refresh()
+        public void Refresh(bool clearGrid)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                await RefreshInternal();
+                if (IsLoading)
+                {
+                    return;
+                }
+
+                IsLoading = true;
+
+                if (clearGrid)
+                {
+                    _grid.ColumnDefinitions.Clear();
+                    _grid.Children.Clear();
+                    DisplayLoadingMessage();
+                }
+
+                await ThumbnailsService.UpdateThumbnails();
+
+                try
+                {
+                    _viewModel = _viewModel ?? new PicturesViewModel();
+                    await _viewModel.Fill();
+                    IsLoading = false;
+                    _pullToRefreshLayout.IsRefreshing = false;
+                }
+                catch (Exception ex)
+                {
+                    IsLoading = false;
+                    _pullToRefreshLayout.IsRefreshing = false;
+                    await DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
+                    return;
+                }
+
+                // don't refresh the grid if there are no new images
+                // this avoids the flashing blue screen
+                if (_viewModel.Pictures.Any() && _viewModel.Pictures.Count() == _grid.Children.Count(x => x is Image))
+                {
+                    return;
+                }
+
+                _grid.ColumnDefinitions.Clear();
+                _grid.Children.Clear();
+
+                // no pictures, lets display a info message
+                if (!_viewModel.Pictures.Any())
+                {
+                    DisplayNoPicturesMessage();
+                    return;
+                }
+
+                _imagesToLoadCount = _viewModel.Pictures.Count();
+
+                var rowCount = 0;
+                var columnCount = 0;
+                var pictureIndex = -1;
+                foreach (var picture in _viewModel.Pictures)
+                {
+                    pictureIndex++;
+
+                    // build the image
+                    var image = new Image
+                    {
+                        MinimumHeightRequest = 120,
+                        Aspect = Aspect.AspectFill,
+                        Source = new UriImageSource
+                        {
+                            CacheValidity = TimeSpan.FromDays(30),
+                            Uri = new Uri(picture.SmallThumbnailUrl)
+                        }
+                    };
+
+                    // listen for property changes, because we need to know when loading is finished
+                    image.PropertyChanged += (sender, e) =>
+                    {
+                        if (e.PropertyName == "IsLoading")
+                        {
+                            var senderImage = (Image)sender;
+                            if (!senderImage.IsLoading)
+                            {
+                                _imagesToLoadCount--;
+                            }
+                        }
+                    };
+
+                    // listen for tap events on pictures
+                    var tapGestureRecognizer = new TapGestureRecognizer();
+                    var pictureIndexClosure = pictureIndex;
+                    tapGestureRecognizer.Tapped += async (s, e) =>
+                    {
+                        await OpenPicture(pictureIndexClosure);
+                    };
+                    image.GestureRecognizers.Add(tapGestureRecognizer);
+
+                    // add the image to the grid
+                    _grid.Children.Add(image, columnCount, rowCount);
+                    if (++columnCount == 3)
+                    {
+                        rowCount++;
+                        columnCount = 0;
+                    }
+                }
+
+                _galleryPage = _galleryPage ?? new GalleryPage();
+                _galleryPage.Build(_viewModel);
+
+
+
+
             });
         }
 
@@ -106,98 +211,6 @@ namespace Fotoschachtel.Common.Views
             }
         }
 
-        private async Task RefreshInternal()
-        {
-            if (IsLoading)
-            {
-                return;
-            }
-
-            IsLoading = true;
-            await ThumbnailsService.UpdateThumbnails();
-
-            try
-            {
-                _viewModel = _viewModel ?? new PicturesViewModel();
-                await _viewModel.Fill();
-                IsLoading = false;
-                _pullToRefreshLayout.IsRefreshing = false;
-            }
-            catch (Exception ex)
-            {
-                IsLoading = false;
-                _pullToRefreshLayout.IsRefreshing = false;
-                await DisplayAlert("Oje", "Fehler beim Laden der Fotos: " + ex.Message, "Och, doof");
-                return;
-            }
-
-            _grid.ColumnDefinitions.Clear();
-            _grid.Children.Clear();
-
-            // no pictures, lets display a info message
-            if (!_viewModel.Pictures.Any())
-            {
-                DisplayNoPicturesMessage();
-                return;
-            }
-
-            _imagesToLoadCount = _viewModel.Pictures.Count();
-
-            var rowCount = 0;
-            var columnCount = 0;
-            var pictureIndex = -1;
-            foreach (var picture in _viewModel.Pictures)
-            {
-                pictureIndex++;
-
-                // build the image
-                var image = new Image
-                {
-                    MinimumHeightRequest = 120,
-                    Aspect = Aspect.AspectFill,
-                    Source = new UriImageSource
-                    {
-                        CacheValidity = TimeSpan.FromDays(30),
-                        Uri = new Uri(picture.SmallThumbnailUrl)
-                    }
-                };
-
-                // listen for property changes, because we need to know when loading is finished
-                image.PropertyChanged += (sender, e) =>
-                                {
-                                    if (e.PropertyName == "IsLoading")
-                                    {
-                                        var senderImage = (Image)sender;
-                                        if (!senderImage.IsLoading)
-                                        {
-                                            _imagesToLoadCount--;
-                                        }
-                                    }
-                                };
-
-                // listen for tap events on pictures
-                var tapGestureRecognizer = new TapGestureRecognizer();
-                var pictureIndexClosure = pictureIndex;
-                tapGestureRecognizer.Tapped += async (s, e) =>
-                                {
-                                    await OpenPicture(pictureIndexClosure);
-                                };
-                image.GestureRecognizers.Add(tapGestureRecognizer);
-
-                // add the image to the grid
-                _grid.Children.Add(image, columnCount, rowCount);
-                if (++columnCount == 3)
-                {
-                    rowCount++;
-                    columnCount = 0;
-                }
-            }
-
-            _galleryPage = _galleryPage ?? new GalleryPage();
-            _galleryPage.Build(_viewModel);
-        }
-
-
 
         private async Task OpenPicture(int pictureIndex)
         {
@@ -208,15 +221,16 @@ namespace Fotoschachtel.Common.Views
         private void DisplayNoPicturesMessage()
         {
             var fs = new FormattedString();
-            fs.Spans.Add(new Span { Text = "\n\n\n\n Oh, es gibt noch gar\n keine Fotos im Event " });
+            fs.Spans.Add(new Span { Text = "\n\n\n\nOje, es gibt noch gar keine Fotos im Event\n" });
             fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
-            fs.Spans.Add(new Span { Text = ".\n Du solltest unbedingt gleich welche knipsen!" });
+            fs.Spans.Add(new Span { Text = "\n\nDu solltest unbedingt gleich welche knipsen!" });
 
             _grid.Children.Add(new Label
             {
                 HorizontalTextAlignment = TextAlignment.Center,
                 TextColor = Colors.FontColor,
-                FormattedText = fs
+                FormattedText = fs,
+                Margin = new Thickness(20, 0, 20, 0)
             }, 0, 0);
         }
 
@@ -224,15 +238,16 @@ namespace Fotoschachtel.Common.Views
         private void DisplayLoadingMessage()
         {
             var fs = new FormattedString();
-            fs.Spans.Add(new Span { Text = "\n\n\n\n Herzlich willkommen bei Fotoschachtel!\n\n Wir sind schon dabei,\n alle Fotos für das Event " });
+            fs.Spans.Add(new Span { Text = "\n\n\n\nEs werden gerade alle Fotos für das Event\n" });
             fs.Spans.Add(new Span { Text = Settings.Event, FontAttributes = FontAttributes.Bold });
-            fs.Spans.Add(new Span { Text = " zu laden.\n\n Bitte noch einen Moment Geduld ..." });
+            fs.Spans.Add(new Span { Text = "\ngeladen.\n\nBitte noch einen Moment Geduld ..." });
 
             _grid.Children.Add(new Label
             {
                 HorizontalTextAlignment = TextAlignment.Center,
                 TextColor = Colors.FontColor,
-                FormattedText = fs
+                FormattedText = fs,
+                Margin = new Thickness(20, 0, 20, 0)
             }, 0, 0);
         }
         #endregion
@@ -266,7 +281,7 @@ namespace Fotoschachtel.Common.Views
             MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", message =>
             {
                 _uploadsPending--;
-                Refresh();
+                Refresh(false);
             });
 
             layout.Children.Add(libraryButton, new Rectangle(0, 1, buttonSize, buttonSize), AbsoluteLayoutFlags.YProportional);
@@ -319,7 +334,8 @@ namespace Fotoschachtel.Common.Views
         {
             if (Settings.LastRunDateTime == null)
             {
-                await DisplayAlert("Willkommen", "Das scheint dein erstes Mal bei Fotoschachtel zu sein.\n\nZum Start haben wir dich zum Ausprobieren mit einem öffentlichen Event namens 'sandbox' verknüpft.\n\nDu kannst das jederzeit in den Einstellungen ändern und einem richtigen Event beitreten.", "Alles klar");
+                var selectEventPage = new SelectEventPage(() => Refresh(true));
+                await Navigation.PushModalAsync(selectEventPage);
             }
             Settings.LastRunDateTime = DateTime.UtcNow;
         }

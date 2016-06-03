@@ -28,6 +28,12 @@ namespace Fotoschachtel.Droid
 		{
 			global::ModernHttpClient.Resource.String.library_name = global::Fotoschachtel.Droid.Resource.String.library_name;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Fotoschachtel.Droid.Resource.Attribute.actionBarSize;
+			global::ZXing.Net.Mobile.Forms.Android.Resource.Layout.zxingscanneractivitylayout = global::Fotoschachtel.Droid.Resource.Layout.zxingscanneractivitylayout;
+			global::ZXing.Net.Mobile.Forms.Android.Resource.Layout.zxingscannerfragmentlayout = global::Fotoschachtel.Droid.Resource.Layout.zxingscannerfragmentlayout;
+			global::ZXing.Net.Mobile.Forms.Android.Resource.String.library_name = global::Fotoschachtel.Droid.Resource.String.library_name;
+			global::ZXing.Mobile.Resource.Id.contentFrame = global::Fotoschachtel.Droid.Resource.Id.contentFrame;
+			global::ZXing.Mobile.Resource.Layout.zxingscanneractivitylayout = global::Fotoschachtel.Droid.Resource.Layout.zxingscanneractivitylayout;
+			global::ZXing.Mobile.Resource.Layout.zxingscannerfragmentlayout = global::Fotoschachtel.Droid.Resource.Layout.zxingscannerfragmentlayout;
 		}
 		
 		public partial class Animation
@@ -2364,6 +2370,9 @@ namespace Fotoschachtel.Droid
 			// aapt resource value: 0x7f07001f
 			public const int collapseActionView = 2131165215;
 			
+			// aapt resource value: 0x7f0700b4
+			public const int contentFrame = 2131165364;
+			
 			// aapt resource value: 0x7f07004a
 			public const int contentPanel = 2131165258;
 			
@@ -3053,6 +3062,12 @@ namespace Fotoschachtel.Droid
 			
 			// aapt resource value: 0x7f03003c
 			public const int support_simple_spinner_dropdown_item = 2130903100;
+			
+			// aapt resource value: 0x7f03003d
+			public const int zxingscanneractivitylayout = 2130903101;
+			
+			// aapt resource value: 0x7f03003e
+			public const int zxingscannerfragmentlayout = 2130903102;
 			
 			static Layout()
 			{
