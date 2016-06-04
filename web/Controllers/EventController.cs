@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fotoschachtel.Services;
 using Fotoschachtel.ViewModels.Event;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using ZXing;
+using ZXing.Common;
 
 namespace Fotoschachtel.Controllers
 {
@@ -63,8 +67,49 @@ namespace Fotoschachtel.Controllers
             // make sure all thumbnails are up-to-date
             await _thumbnailsService.RenderThumbnails(eventMetadata.ContainerName);
 
-            var viewModel = new IndexViewModel(_sasService);
-            return View(await viewModel.Fill(eventMetadata.Event, eventMetadata.ContainerName));
+            var viewModel = new IndexViewModel(_sasService, _hashService);
+            return View(await viewModel.Fill(eventMetadata));
+        }
+
+
+        [Route("event/{event}/code")]
+        public async Task<IActionResult> Code([NotNull] string @event)
+        {
+            return await Index(@event, "");
+        }
+
+
+        [Route("event/{event}:{password}/code")]
+        public async Task<IActionResult> Code([NotNull] string @event, [NotNull] string password)
+        {
+            var metadata = await _metadataService.GetOrLoad();
+            var eventMetadata = metadata.Events.FirstOrDefault(x => x.Event.Equals(@event, StringComparison.InvariantCultureIgnoreCase));
+            if (eventMetadata == null)
+            {
+                return NotFound();
+            }
+            if (_hashService.HashEventPassword(@event, eventMetadata.Password) != password)
+            {
+                return Unauthorized();
+            }
+
+            var barcodeWriter = new BarcodeWriter
+            {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new EncodingOptions
+                {
+                    Height = 250,
+                    Width = 250,
+                    Margin = 1
+                }
+            };
+
+            using (var bitmap = barcodeWriter.Write($"{eventMetadata.Event}:{eventMetadata.Password}"))
+            using (var stream = new MemoryStream())
+            {
+                bitmap.Save(stream, ImageFormat.Png);
+                return new FileContentResult(stream.ToArray(), "image/png");
+            }
         }
 
 
