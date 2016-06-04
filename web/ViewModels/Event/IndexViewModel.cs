@@ -22,6 +22,7 @@ namespace Fotoschachtel.ViewModels.Event
         public async Task<IndexViewModel> Fill([NotNull] EventMetadata eventMetadata)
         {
             Event = eventMetadata.Event;
+            Password = eventMetadata.Password;
             PasswordHash = _hashService.HashEventPassword(eventMetadata.Event, eventMetadata.Password);
             SasToken = await _sasService.GetSasForContainer(eventMetadata.Event, eventMetadata.ContainerName);
             return this;
@@ -30,6 +31,7 @@ namespace Fotoschachtel.ViewModels.Event
  
         public SasService.SasToken SasToken { get; set; }
         public string Event { get; set; }
+        public string Password { get; set; }
         public string PasswordHash { get; set; }
         public string AppStoreLink { get; set; }
     }

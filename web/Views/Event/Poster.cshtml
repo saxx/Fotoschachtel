@@ -1,0 +1,35 @@
+﻿@model Fotoschachtel.ViewModels.Event.IndexViewModel
+
+@{
+    ViewBag.BodyClass = "page-poster";
+}
+
+<div id="description">
+    <div id="header">
+        <img src="~/img/fotoschachtel_512.png" />
+        <span>Fotos teilen mit Fotoschachtel</span>
+    </div>
+
+    <div id="text">
+        <p>
+            Mit Fotoschachtel können du und alle anderen Gäste Fotos dieses Events machen und sofort mit allen anderen teilen.
+        </p>
+        <p>
+            So funktionierts:
+        </p>
+
+        <ol>
+            <li>Fotoschachtel für <img src="~/img/apple-black.png" /> oder <img src="~/img/android-black.png" /> herunterladen</li>
+            <li>QR-Code <img src="~/img/qrcode-black.png" /> scannen</li>
+            <li>Fotos knipsen & anschauen <img src="~/img/heart-black.png" /></li>
+        </ol>
+    </div>
+</div>
+
+<div id="code">
+    <img src="@Url.Action("Code", new {@event = Model.Event, password = Model.PasswordHash})"/>
+</div>
+
+<div id="footer">
+    https://fotoschachtel.sachsenhofer.com<br/>Event <span>@Model.Event</span> Passwort <span>@Model.Password</span>
+</div>

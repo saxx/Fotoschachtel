@@ -1,0 +1,68 @@
+﻿@import "variables";
+
+body.page-poster {
+    background-color: white;
+    color: black;
+    width: 700px;
+    margin: 0 auto;
+    border: 27px solid $blue;
+
+    div#description {
+        p {
+            margin-bottom: 40px;
+        }
+
+        #header {
+            height: 150px;
+
+            img {
+                float: left;
+                padding-right: 30px;
+                height: 150px;
+            }
+
+            span {
+                display: block;
+                color: black;
+                text-align: left;
+                font-size: 50px;
+                font-weight: bold;
+                padding-top: 15px;
+            }
+        }
+
+        #text {
+            margin: 40px 27px 60px 27px;
+            background-color: $white;
+            color: black;
+            text-align: left;
+            font-size: 25px;
+
+            li {
+                margin-bottom: 20px;
+                font-size: 32px;
+                img {
+                    height: 38px;
+                    vertical-align: bottom;
+                    padding-bottom: 3px;
+                }
+            }
+        }
+    }
+
+    div#code {
+        text-align: center;
+    }
+
+    div#footer {
+        text-align: right;
+        margin: 60px 10px 10px 10px;
+        font-size: 14px;
+
+        span {
+            border: 1px solid $blue;
+            border-radius: 3px;
+            padding: 0 5px;
+        }
+    }
+}

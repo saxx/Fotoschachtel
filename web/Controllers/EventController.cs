@@ -37,6 +37,7 @@ namespace Fotoschachtel.Controllers
         #endregion
 
 
+        #region Index
         [Route("event/{event}")]
         public async Task<IActionResult> Index([NotNull] string @event)
         {
@@ -66,12 +67,12 @@ namespace Fotoschachtel.Controllers
 
             // make sure all thumbnails are up-to-date
             await _thumbnailsService.RenderThumbnails(eventMetadata.ContainerName);
-
-            var viewModel = new IndexViewModel(_sasService, _hashService);
-            return View(await viewModel.Fill(eventMetadata));
+            return View(await new IndexViewModel(_sasService, _hashService).Fill(eventMetadata));
         }
+        #endregion
 
 
+        #region Code
         [Route("event/{event}/code")]
         public async Task<IActionResult> Code([NotNull] string @event)
         {
@@ -111,8 +112,42 @@ namespace Fotoschachtel.Controllers
                 return new FileContentResult(stream.ToArray(), "image/png");
             }
         }
+        #endregion
 
 
+        #region Poster
+        [Route("event/{event}/poster")]
+        public async Task<IActionResult> Poster([NotNull] string @event)
+        {
+            return await Index(@event, "");
+        }
+
+
+        [Route("event/{event}:{password}/poster")]
+        public async Task<IActionResult> Poster([NotNull] string @event, [NotNull] string password)
+        {
+            var metadata = await _metadataService.GetOrLoad();
+            var eventMetadata = metadata.Events.FirstOrDefault(x => x.Event.Equals(@event, StringComparison.InvariantCultureIgnoreCase));
+            if (eventMetadata == null)
+            {
+                return View("NotFound", new NotFoundViewModel
+                {
+                    Event = @event
+                });
+            }
+            if (_hashService.HashEventPassword(@event, eventMetadata.Password) != password)
+            {
+                return View("Unauthorized", new UnauthorizedViewModel
+                {
+                    Event = eventMetadata.Event
+                });
+            }
+            return View(await new IndexViewModel(_sasService, _hashService).Fill(eventMetadata));
+        }
+        #endregion
+
+
+        #region Create
         [Route("create-event")]
         public IActionResult Create([CanBeNull] string @event)
         {
@@ -150,6 +185,7 @@ namespace Fotoschachtel.Controllers
             }
             return View(viewModel);
         }
+        #endregion
 
 
         [Route("authorize")]

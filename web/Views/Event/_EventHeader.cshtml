@@ -2,7 +2,7 @@
 
 <header>
     <img src="~/img/fotoschachtel_512.png" alt="Fotoschachtel-Logo" class="logo" />
-    <a href="#" class="code">
+    <a href="@Url.Action("Poster", new {@event = Model.Event, password = Model.PasswordHash})" class="code">
         <img src="@Url.Action("Code", new {@event = Model.Event, password = Model.PasswordHash})" alt="Fotoschachtel-Code"/>
     </a>
     <a href="#" id="uploadLink" class="upload">
