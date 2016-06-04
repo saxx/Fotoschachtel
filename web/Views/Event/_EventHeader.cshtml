@@ -1,0 +1,14 @@
+﻿@model Fotoschachtel.ViewModels.Event.IndexViewModel
+
+<header>
+    <img src="~/img/fotoschachtel_512.png" alt="Fotoschachtel-Logo" class="logo" />
+    <a href="#" class="code">
+        <img src="@Url.Action("Code", new {@event = Model.Event, password = Model.PasswordHash})" alt="Fotoschachtel-Code"/>
+    </a>
+    <a href="#" id="uploadLink" class="upload">
+        <img src="~/img/upload-icon.png" alt="Upload-Link" title="Fotos auf diese Seite ziehen, um sie zum Event hinzuzufügen"/>
+    </a>
+    <h1>
+        @Model.Event <small></small>
+    </h1>
+</header>

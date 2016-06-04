@@ -9,8 +9,7 @@ var prefixer = require("gulp-autoprefixer");
 
 
 var paths = {
-    js: ["wwwroot/js/featherlight.js", "wwwroot/js/featherlight.gallery.js", "wwwroot/js/app/**/*.js"],
-    css: ["wwwroot/css/**/*.scss"]
+    js: ["wwwroot/js/featherlight.js", "wwwroot/js/featherlight.gallery.js", "wwwroot/js/app/**/*.js"]
 };
 
 
@@ -24,7 +23,7 @@ gulp.task("js", function () {
 
 
 gulp.task("css", function () {
-    return gulp.src(paths.css, { base: "." })
+    return gulp.src("wwwroot/css/site.scss", { base: "." })
         .pipe(sass().on("error", sass.logError))
         .pipe(concat("site.min.css"))
         .pipe(prefixer({ browsers: ["last 3 versions"] }))
@@ -35,7 +34,7 @@ gulp.task("css", function () {
 
 
 gulp.task("watch", function () {
-    gulp.watch(paths.css, ["css"]);
+    gulp.watch("wwwroot/css/*.scss", ["css"]);
     gulp.watch(paths.js, ["js"]);
 });
 

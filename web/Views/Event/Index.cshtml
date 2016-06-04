@@ -4,13 +4,9 @@
     ViewBag.BodyClass = "page-event";
 }
 
-<h1>
-    <img src="@Url.Action("Code", new { @event = Model.Event, password = Model.PasswordHash })" alt="Fotoschachtel-Code"/>
-    @Model.Event <small></small>
-</h1>
+@Html.Partial("_EventHeader")
 
 <p>
-    Um Fotos zu diesem Event hinzuzufügen, sie einfach auf diese Seite ziehen, oder <a href="#" id="uploadLink">hier</a> klicken.
     <input type="file" id="file" name="file" multiple style="display: none;"/>
     <div id="progressContainer"></div>
 </p>

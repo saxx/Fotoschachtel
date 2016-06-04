@@ -31,5 +31,6 @@ namespace Fotoschachtel.ViewModels.Event
         public SasService.SasToken SasToken { get; set; }
         public string Event { get; set; }
         public string PasswordHash { get; set; }
+        public string AppStoreLink { get; set; }
     }
 }

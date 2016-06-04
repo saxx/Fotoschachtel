@@ -1,0 +1,51 @@
+﻿@import "variables";
+
+body.page-home {
+    .container {
+        max-width: 768px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin: 12px;
+    }
+
+    ul {
+        font-size: 1.4em;
+        list-style-type: none;
+        
+        li {
+            margin-top: 12px;
+        }
+
+        .glyphicon {
+            font-size: 1.6em;
+            vertical-align: bottom;
+            padding-right: 12px;
+        }
+    }
+
+    p#logo {
+        text-align:center;
+        margin:0;
+
+        img {
+            width: 512px;
+            @media(max-width: 512px) {
+                width: 256px;
+            }
+        }
+    }
+
+    p#event-box {
+        text-align:Center;
+        font-size: 1.5em;
+        margin-bottom: 50px;
+        a {
+            font-size: 0.7em;
+            margin-top: 10px;
+        }
+    }
+
+}
