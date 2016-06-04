@@ -44,6 +44,7 @@ namespace Fotoschachtel
             services.AddTransient<SasService>();
             services.AddTransient<MetadataService>();
             services.AddTransient<ThumbnailsService>();
+            services.AddTransient<HashService>();
 
             services.AddMvc();
         }
