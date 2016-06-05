@@ -6,33 +6,30 @@
     <img src="/img/fotoschachtel_512.png" />
 </p>
 
+<h1>Fotos teilen mit Fotoschachtel</h1>
+
+<p>
+    Warst du schon einmal auf einer Party, einer Hochzeit, einem Gruppenausflug oder sonst irgendeinem Event? 
+    Und was es tags drauf wahnsinnig kompliziert, mit den anderen Gästen Event-Fotos auszutauschen?
+</p>
+<p>
+    <b>Mit Fotoschachtel können du und alle anderen Gäste Fotos eines Events machen und sofort mit allen anderen teilen.</b>
+    Und so funktionierts:
+</p>
+<ol>
+    <li>Fotoschachtel für <a href="https://itunes.apple.com/de/app/fotoschachtel/id1114136776"><img src="~/img/apple.png" /></a> oder <a href="https://play.google.com/store/apps/details?id=com.sachsenhofer.fotoschachtel"><img src="~/img/android.png" /></a> herunterladen</li>
+    <li>QR-Code des Events <img src="~/img/qrcode.png"/> scannen</li>
+    <li>Fotos knipsen & anschauen <img src="~/img/heart.png"/></li>
+</ol>
+
+<p>
+    Du kannst Event-Fotos auch ohne App direkt über diese Website ansehen,<br/>
+    oder du kannst <a href="@Url.Action("Create", "Event")">ein neues Event erstellen</a>, den dazugehörigen QR-Code generieren und Fotoschachtel gemeinsam mit deinen Gästen sofort für deine Event verwenden.
+</p>
+
 <p id="event-box">
-    <input type="text" id="event" placeholder="Event"/><button id="gotoEventButton">Dieses Event anzeigen</button>
-    <br />
-    <a href="@Url.Action("Create", "Event")" class="btn btn-default">Neues Event anlegen</a>
-</p>
-
-<p>
-    Ich war noch nie auf einer Hochzeit, einer Party, einem Gruppenausflug oder sonst irgendeinem Event, wo tags drauf der Austausch der Fotos mit allen anderen Gästen nicht wahnsinnig kompliziert war.
-</p>
-
-<h1>
-    Fotoschachtel möchte dieses Problem lösen
-</h1>
-
-<p>
-    Fotoschachtel ist eine App für Android und iOS, mit der jeder Gast eines Events blitzschnell Fotos machen kann.
-</p>
-<p>
-
-    Diese Fotos werden dann unmittelbar und sofort mit allen anderen Gästen geteilt.
-    Keine endlosen E-Mail-Kettenbriefe, kein Hantieren mehr mit Dropbox oder Einweg-Kameras aus den 90ern:
-    <ul>
-        <li><span class="glyphicon glyphicon-phone"></span> Smartphone rausholen</li>
-        <li><span class="glyphicon glyphicon-download"></span> Fotoschachtel runterladen</li>
-        <li><span class="glyphicon glyphicon-camera"></span> Fotos machen</li>
-        <li><span class="glyphicon glyphicon-heart-empty"></span> Fertig</li>
-    </ul>
+    <input type="text" id="event" placeholder="Event?"/><button id="gotoEventButton">Event anzeigen</button>
+    <a href="@Url.Action("Create", "Event")" class="button">Neues Event erstellen</a>
 </p>
 
 <p>

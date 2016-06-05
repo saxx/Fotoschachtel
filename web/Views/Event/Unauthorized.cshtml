@@ -1,13 +1,20 @@
 ﻿@model Fotoschachtel.ViewModels.Event.UnauthorizedViewModel
 
-<h1>Der Zugriff auf das Event '@Model.Event' ist mit einem Passwort geschützt</h1>
+@{
+    ViewBag.BodyClass = "page-unauthorized";
+}
+
+<p id="logo">
+    <img src="/img/fotoschachtel_512.png" />
+</p>
+
+<h1>
+    Das Event '@Model.Event' ist mit einem Passwort geschützt
+</h1>
 
 <form asp-action="Unauthorized" asp-route-event="@Model.Event">
     <p>Wenn du das Passwort kennst, kannst du es hier angeben um fortzufahren:</p>
-    <p>
-        <input type="password" id="password" name="password" placeholder="Passwort" />
-    </p>
-    <p>
-        <button id="button">Weiter</button>
+    <p id="input-box">
+        <input type="password" id="password" name="password" placeholder="Passwort" /><button id="button">Weiter</button>
     </p>
 </form>

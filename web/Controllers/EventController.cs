@@ -57,7 +57,7 @@ namespace Fotoschachtel.Controllers
                     Event = @event
                 });
             }
-            if (_hashService.HashEventPassword(@event, eventMetadata.Password) !=  password)
+            if (_hashService.HashEventPassword(@event, eventMetadata.Password) != password)
             {
                 return View("Unauthorized", new UnauthorizedViewModel
                 {
@@ -151,7 +151,7 @@ namespace Fotoschachtel.Controllers
         [Route("create-event")]
         public IActionResult Create([CanBeNull] string @event)
         {
-            var viewModel = new CreateViewModel {Event = @event};
+            var viewModel = new CreateViewModel { Event = @event };
             return View(viewModel);
         }
 
@@ -163,7 +163,7 @@ namespace Fotoschachtel.Controllers
             if (ModelState.IsValid)
             {
                 var metadata = await _metadataService.GetOrLoad();
-                if (metadata.Events.Any(x => x.Event.Equals(viewModel.Event)))
+                if (metadata.Events.Any(x => x.Event.Equals(viewModel.Event, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     ModelState.AddModelError("event", "Es gibt bereits ein Event mit diesem Namen.");
                 }
@@ -177,10 +177,14 @@ namespace Fotoschachtel.Controllers
                         CreatorEmail = viewModel.Email,
                         ContainerName = SasService.GetContainerName(viewModel.Event)
                     };
-                    metadata.Events = metadata.Events.Concat(new[] {eventMetadata}).ToArray();
+                    metadata.Events = metadata.Events.Concat(new[] { eventMetadata }).ToArray();
                     await _metadataService.Save(metadata);
 
-                    return RedirectToAction("Index", new {eventId = viewModel.Event, password = viewModel.Password});
+                    return RedirectToAction("Index", new
+                    {
+                        @event = viewModel.Event,
+                        password = _hashService.HashEventPassword(viewModel.Event, viewModel.Password)
+                    });
                 }
             }
             return View(viewModel);

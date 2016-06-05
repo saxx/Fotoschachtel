@@ -49,6 +49,10 @@ namespace Fotoschachtel.Services
             }
 
             var container = GetContainer(containerName);
+            if (!await container.ExistsAsync())
+            {
+                return;
+            }
 
             var existingFiles = container.ListBlobs(useFlatBlobListing: true).OfType<CloudBlockBlob>().Select(b => b.Name).ToList();
             var existingPrimaryFiles = existingFiles.Where(x => !x.StartsWith("thumbnail")).ToList();
@@ -77,6 +81,10 @@ namespace Fotoschachtel.Services
             }
 
             var container = GetContainer(containerName);
+            if (!await container.ExistsAsync())
+            {
+                return;
+            }
 
             var sourceBlob = container.GetBlockBlobReference(fileName);
 

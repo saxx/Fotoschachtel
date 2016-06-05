@@ -219,7 +219,7 @@
                     console.log("Rendering thumbnails ...");
                     $.ajax({
                         method: "POST",
-                        url: "@Url.Action("RenderThumbnails", "Json", new {eventId = Model.Event})"
+                        url: "@Url.Content("~/json/event/")@Html.Raw(Model.Event + ":" + Model.PasswordHash + "/thumbnails")"
                     }).done(function () {
                         console.log("Thumbnails rendered.");
                         setTimeout(loadPictures, 1000);

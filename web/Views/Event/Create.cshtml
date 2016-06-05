@@ -1,24 +1,35 @@
 ﻿@model Fotoschachtel.ViewModels.Event.CreateViewModel
 
-<h1>Event erstellen</h1>
+@{
+    ViewBag.BodyClass = "page-create";
+}
+
+<p id="logo">
+    <img src="/img/fotoschachtel_512.png" />
+</p>
+
+<h1>Neues Event erstellen</h1>
+
+<p>
+    Wenn du hier ein Event erstellst, kannst du es anschließend sofort über die Fotoschachtel-App verwenden. 
+    Scanne dort entweder den QR-Code, oder gib manuell den Namen und das Passworts des Events ein.
+</p>
 
 <form asp-action="Create">
     @Html.ValidationSummary()
 
-    <p>
-        Event:<br/>
-        @Html.TextBoxFor(x => x.Event)
-    </p>
-    
-    <p>
-        Passwort:<br/>
-        @Html.TextBoxFor(x => x.Password)
-    </p>
-
-    <p>
-        E-Mail-Adresse:<br/>
-        @Html.TextBoxFor(x => x.Email)
-    </p>
-    
-    <button>Event anlegen</button>
+    <div id="input-box">
+        <p>
+            <input asp-for="Event" placeholder="Event" />
+        </p>
+        <p>
+            <input asp-for="Password" placeholder="Password" />
+        </p>
+        <p>
+            <input asp-for="Email" placeholder="E-Mail-Adresse"/>
+        </p>
+        <p>
+            <button>Event anlegen</button>
+        </p>
+    </div>
 </form>

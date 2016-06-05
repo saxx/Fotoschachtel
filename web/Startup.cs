@@ -65,12 +65,10 @@ namespace Fotoschachtel
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute("json_thumbnails_with_password", "json/event/{eventId}:{password}/thumbnails", new { controller = "Json", action = "RenderThumbnails" });
-                routes.MapRoute("json_thumbnails", "json/event/{eventId}/thumbnails", new {controller = "Json", action = "RenderThumbnails", password = ""});
-                routes.MapRoute("json_thumbnail_with_password", "json/event/{eventId}:{password}/picture/{filename}/thumbnails", new { controller = "Json", action = "RenderThumbnail" });
-                routes.MapRoute("json_thumbnail", "json/event/{eventId}/picture/{filename}/thumbnails", new { controller = "Json", action = "RenderThumbnail", password = "" });
-                routes.MapRoute("json_token_with_password", "json/event/{eventId}:{password}", new { controller = "Json", action = "GetStorageUrl" });
-                routes.MapRoute("json_token", "json/event/{eventId}", new { controller = "Json", action = "GetStorageUrl", password = "" });
+                routes.MapRoute("json_thumbnails_with_password", "json/event/{event}:{password}/thumbnails", new { controller = "Json", action = "RenderThumbnails" });
+                routes.MapRoute("json_thumbnails", "json/event/{event}/thumbnails", new {controller = "Json", action = "RenderThumbnails", password = ""});
+                routes.MapRoute("json_token_with_password", "json/event/{event}:{password}", new { controller = "Json", action = "GetStorageUrl" });
+                routes.MapRoute("json_token", "json/event/{event}", new { controller = "Json", action = "GetStorageUrl", password = "" });
             }
             );
         }

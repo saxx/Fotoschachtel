@@ -1,4 +1,6 @@
-﻿@import "featherlight";
+﻿@import "normalize.css";
+
+@import "featherlight";
 @import "featherlight.gallery";
 @import url("https://fonts.googleapis.com/css?family=Roboto:100");
 
@@ -10,10 +12,15 @@ body {
     margin: 12px;
     font-family: $font-family;
     font-weight: 100;
+    font-size: 18px;
 
     @media(max-width: $smallWidth) {
         margin: 3px;
     }
+}
+
+p, h1 {
+    margin: 24px 0;
 }
 
 a, a:visited, a:active, a:focus {
@@ -26,33 +33,56 @@ a:hover {
     text-decoration: underline;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=email] {
     background-color: $blue;
     border: 2px solid $white;
     color: $white;
-    font-size: 1.1em;
     padding: 4px 7px;
+    font-family: $font-family;
 }
 
-button, .btn-default, .btn-default:hover, .btn-default:focus, .btn-default:visited, .btn-default:active {
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: $white;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: $white;
+    opacity: 1;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: $white;
+    opacity: 1;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: $white;
+}
+
+button, .button, .button:hover, .button:focus, .button:visited, .button:active {
     background-color: $white;
     border: 2px solid $white;
     color: $blue;
-    font-size: 1.1em;
     padding: 4px 20px;
     border-radius: 0;
     text-decoration: none;
+    font-family: $font-family;
+    cursor: pointer;
+    box-sizing: content-box;
 }
 
 .validation-summary-errors {
     ul {
-        list-style-type:none;
+        list-style-type: none;
         padding: 0;
     }
+
     color: $red;
 }
-input[type=text].input-validation-error {
+
+input.input-validation-error {
     border-color: $red;
+    box-shadow: none;
 }
 
 html.dragging body, html.dragging .thumbnail {
@@ -62,3 +92,5 @@ html.dragging body, html.dragging .thumbnail {
 @import "page-home";
 @import "page-event";
 @import "page-poster";
+@import "page-unauthorized";
+@import "page-create";

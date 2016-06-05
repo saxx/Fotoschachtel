@@ -1,6 +1,6 @@
 ﻿@import "variables";
 
-body.page-home {
+body.page-create {
     margin: 0 3px;
 
     .container {
@@ -23,26 +23,14 @@ body.page-home {
         margin-top: -22px;
     }
 
-    ol {
-        margin: 0;
-
-        li {
-            margin-bottom: 12px;
-            img {
-                vertical-align: bottom;
-                height: 24px;
-            }
+    div#input-box {
+        text-align:center;
+        p {
+            margin: 12px 0;
         }
-    }
-    
-    p#event-box {
-        input {
-            width: 150px;
+        input, button {
+            width: 200px;
+            padding: 4px 7px;
         }
-
-        a {
-            float:right;
-        }
-        
     }
 }
