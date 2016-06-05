@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Fotoschachtel.Services;
-using Fotoschachtel.ViewModels.Event;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -40,6 +39,8 @@ namespace Fotoschachtel
             services.AddOptions();
             services.Configure<Settings>(settings => Configuration.GetSection("Settings").Bind(settings));
 
+            services.AddApplicationInsightsTelemetry(Configuration);
+
             //services.AddHaufwerk("Fotoschachtel", "http://haufwerk.sachsenhofer.com");
             services.AddTransient<SasService>();
             services.AddTransient<MetadataService>();
@@ -55,6 +56,7 @@ namespace Fotoschachtel
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseApplicationInsightsRequestTelemetry();
             app.UseDeveloperExceptionPage();
             // app.UseHaufwerk();
 
