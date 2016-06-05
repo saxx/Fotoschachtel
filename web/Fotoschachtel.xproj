@@ -14,6 +14,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
+    <ApplicationInsightsResourceId>/subscriptions/40ff03d8-05ca-418a-8031-ba1c69d87d17/resourcegroups/fotoschachtel/providers/microsoft.insights/components/Fotoschachtel</ApplicationInsightsResourceId>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />
