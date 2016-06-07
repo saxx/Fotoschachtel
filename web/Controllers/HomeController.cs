@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Fotoschachtel.Controllers
 {
@@ -7,6 +8,11 @@ namespace Fotoschachtel.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult TestErrorHandling()
+        {
+            throw new Exception("This exception is just a test.");
         }
     }
 }

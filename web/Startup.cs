@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Haufwerk.Client;
 
 namespace Fotoschachtel
 {
@@ -41,7 +42,7 @@ namespace Fotoschachtel
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            //services.AddHaufwerk("Fotoschachtel", "http://haufwerk.sachsenhofer.com");
+            services.AddHaufwerk("Fotoschachtel", "https://haufwerk.sachsenhofer.com");
             services.AddTransient<SasService>();
             services.AddTransient<MetadataService>();
             services.AddTransient<ThumbnailsService>();
@@ -58,7 +59,7 @@ namespace Fotoschachtel
 
             app.UseApplicationInsightsRequestTelemetry();
             app.UseDeveloperExceptionPage();
-            // app.UseHaufwerk();
+            app.UseHaufwerk();
 
             app.UseStaticFiles();
 
