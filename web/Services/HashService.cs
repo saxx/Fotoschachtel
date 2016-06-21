@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
@@ -18,8 +19,7 @@ namespace Fotoschachtel.Services
                 password = "";
             }
             var hash = Hash(password, @event.ToLower());
-            hash = hash.Replace(":", "");
-            hash = hash.Replace("=", "");
+            hash = Regex.Replace(hash, "[^A-Za-z0-9]", "");
             return hash;
         }
 
