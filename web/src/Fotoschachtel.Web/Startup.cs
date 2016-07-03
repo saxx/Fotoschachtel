@@ -1,4 +1,5 @@
 ﻿using Fotoschachtel.Services;
+using Haufwerk.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +35,7 @@ namespace Fotoschachtel.Web
             services.Configure<Settings>(settings => Configuration.GetSection("Settings").Bind(settings));
 
             services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddHaufwerk("Fotoschachtel", "https://haufwerk.sachsenhofer.com");
 
             services.AddTransient<SasService>();
             services.AddTransient<MetadataService>();
@@ -50,18 +52,23 @@ namespace Fotoschachtel.Web
             loggerFactory.AddDebug();
 
             app.UseApplicationInsightsRequestTelemetry();
-
             app.UseDeveloperExceptionPage();
+            app.UseHaufwerk();
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("json_thumbnails_with_password", "json/event/{event}:{password}/thumbnails", new { controller = "Json", action = "RenderThumbnails" });
+                routes.MapRoute("json_thumbnails", "json/event/{event}/thumbnails", new { controller = "Json", action = "RenderThumbnails", password = "" });
+                routes.MapRoute("json_token_with_password", "json/event/{event}:{password}", new { controller = "Json", action = "GetStorageUrl" });
+                routes.MapRoute("json_token", "json/event/{event}", new { controller = "Json", action = "GetStorageUrl", password = "" });
             });
+
+
+
         }
     }
 }

@@ -18,7 +18,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "WindowsAzure.Storage": "7.1.2",
-    "ZXing.Net": "0.14.0.1"
+    "ZXing.Net": "0.14.0.1",
+    "Haufwerk.Client": "0.0.19"
   },
 
   "tools": {
