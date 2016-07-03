@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/page-unauthorized.css",
+    "inputFile": "wwwroot/css/page-unauthorized.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/page-poster.css",
+    "inputFile": "wwwroot/css/page-poster.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/page-home.css",
+    "inputFile": "wwwroot/css/page-home.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/page-create.css",
+    "inputFile": "wwwroot/css/page-create.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/variables.css",
+    "inputFile": "wwwroot/css/variables.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/page-event.css",
+    "inputFile": "wwwroot/css/page-event.scss"
+  }
+]

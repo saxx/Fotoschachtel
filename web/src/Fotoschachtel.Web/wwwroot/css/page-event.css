@@ -1,0 +1,64 @@
+﻿body.page-event header {
+  margin: 0;
+  height: 70px; }
+  body.page-event header h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin: 0 50px;
+    padding: 8px 0 0 0; }
+    @media (max-width: 800px) {
+      body.page-event header h1 {
+        padding: 0; } }
+    body.page-event header h1 small {
+      color: white;
+      font-size: 0.5em; }
+      @media (max-width: 800px) {
+        body.page-event header h1 small {
+          display: block; } }
+  body.page-event header img.logo {
+    height: 50px;
+    float: left; }
+  body.page-event header a.code img, body.page-event header a.upload img {
+    height: 30px;
+    margin-top: 10px;
+    float: right; }
+
+body.page-event #pictures {
+  width: 100%;
+  margin-right: -3px;
+  margin-left: -3px; }
+  body.page-event #pictures .thumbnail {
+    width: 12.5%;
+    float: left;
+    padding: 0;
+    margin: 0 0 12px 0;
+    text-align: center; }
+    @media (max-width: 1600px) {
+      body.page-event #pictures .thumbnail {
+        width: 14.28%; } }
+    @media (max-width: 1400px) {
+      body.page-event #pictures .thumbnail {
+        width: 16.66%; } }
+    @media (max-width: 1200px) {
+      body.page-event #pictures .thumbnail {
+        width: 20%; } }
+    @media (max-width: 1000px) {
+      body.page-event #pictures .thumbnail {
+        width: 25%; } }
+    @media (max-width: 800px) {
+      body.page-event #pictures .thumbnail {
+        width: 33.33%; } }
+    @media (max-width: 600px) {
+      body.page-event #pictures .thumbnail {
+        width: 50%; } }
+
+body.page-event progress {
+  width: 100%; }
+
+body.page-event .featherlight .featherlight-content {
+  background-color: black;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  max-height: 100%; }
+

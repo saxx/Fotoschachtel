@@ -1,0 +1,26 @@
+﻿body.page-home {
+  margin: 0 3px; }
+  body.page-home .container {
+    max-width: 768px;
+    margin: 0 auto; }
+    body.page-home .container p#logo {
+      margin: 0;
+      text-align: center; }
+      body.page-home .container p#logo img {
+        width: 300px; }
+  body.page-home h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-top: -22px; }
+  body.page-home ol {
+    margin: 0; }
+    body.page-home ol li {
+      margin-bottom: 12px; }
+      body.page-home ol li img {
+        vertical-align: bottom;
+        height: 24px; }
+  body.page-home p#event-box input {
+    width: 150px; }
+  body.page-home p#event-box a {
+    float: right; }
+

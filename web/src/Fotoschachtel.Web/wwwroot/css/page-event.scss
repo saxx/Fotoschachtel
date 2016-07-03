@@ -1,0 +1,86 @@
+﻿@import "variables.scss";
+
+body.page-event {
+    header {
+        margin: 0;
+        height: 70px;
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin: 0 50px;
+            padding: 8px 0 0 0;
+
+            @media(max-width: $smallWidth) {
+                padding: 0;
+            }
+
+            small {
+                color: $white;
+                font-size: 0.5em;
+
+                @media(max-width: $smallWidth) {
+                    display: block;
+                }
+            }
+        }
+
+        img.logo {
+            height: 50px;
+            float: left;
+        }
+
+        a.code, a.upload {
+            img {
+                height: 30px;
+                margin-top: 10px;
+                float: right;
+            }
+        }
+    }
+
+    #pictures {
+        width: 100%;
+        margin-right: -3px;
+        margin-left: -3px;
+
+        .thumbnail {
+            width: 12.5%;
+            float: left;
+            padding: 0;
+            margin: 0 0 12px 0;
+            text-align: center;
+
+            @media(max-width: 1600px) {
+                width: 14.28%;
+            }
+            @media(max-width: 1400px) {
+                width: 16.66%;
+            }
+            @media(max-width: 1200px) {
+                width: 20%;
+            }
+            @media(max-width: 1000px) {
+                width: 25%;
+            }
+            @media(max-width: 800px) {
+                width: 33.33%;
+            }
+            @media(max-width: 600px) {
+                width: 50%;
+            }
+        }
+    }
+
+    progress {
+        width: 100%;
+    }
+
+    .featherlight .featherlight-content {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        max-height: 100%;
+    }
+}
