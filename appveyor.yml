@@ -7,15 +7,12 @@ branches:
     - master
 
 build_script:
-- cd ./web
-- npm install npm -g #update npm to latest version
-- npm install gulp -g
-- npm install
+- cd ./web/src/Fotoschachtel.Web
 - CALL dotnet restore
 - CALL dotnet publish --configuration Release --output bin/publish
 
 artifacts:
-- path: ./web/bin/publish
+- path: ./web/src/Fotoschachtel.Web/bin/publish
   name: Web application
 
 environment:
@@ -29,5 +26,5 @@ environment:
 
 deploy_script:
 - CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Fotoschachtel,recycleMode=StopAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
-- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath=%APPVEYOR_BUILD_FOLDER%\web\bin\publish -dest:contentPath=Fotoschachtel,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
+- CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath=%APPVEYOR_BUILD_FOLDER%\web\src\Fotoschachtel.Web\bin\publish -dest:contentPath=Fotoschachtel,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
 - CALL "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:recycleApp -dest:recycleApp=Fotoschachtel,recycleMode=StartAppPool,computername=http://%deploy_server%/MSDEPLOYAGENTSERVICE,username=%deploy_username%,password=%deploy_password%
