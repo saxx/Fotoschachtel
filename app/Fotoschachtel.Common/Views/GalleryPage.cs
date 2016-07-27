@@ -24,7 +24,6 @@ namespace Fotoschachtel.Common.Views
 
                 var image = new Image
                 {
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
                     Source = new UriImageSource
                     {
                         CacheValidity = TimeSpan.FromDays(30),
