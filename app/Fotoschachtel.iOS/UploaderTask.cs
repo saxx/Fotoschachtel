@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Fotoschachtel.Common;
 using Foundation;
-using Xamarin.Forms;
 
 namespace Fotoschachtel.Ios
 {
@@ -24,22 +23,21 @@ namespace Fotoschachtel.Ios
 
             while (Settings.UploadQueue.Any())
             {
-                var nextFileName = Settings.UploadQueue.FirstOrDefault();
-                if (nextFileName == null)
+                var nextFilePath = Settings.UploadQueue.FirstOrDefault();
+                if (nextFilePath == null)
                 {
                     break;
                 }
                 Settings.UploadQueue = Settings.UploadQueue.Skip(1).ToArray();
 
-                var uploadHandleUrl = NSUrl.FromString($"{sasToken.ContainerUrl}/{nextFileName}{sasToken.SasQueryString}");
+                var uploadHandleUrl = NSUrl.FromString($"{sasToken.ContainerUrl}/{nextFilePath}{sasToken.SasQueryString}");
                 var request = new NSMutableUrlRequest(uploadHandleUrl)
                 {
                     HttpMethod = "PUT",
                     ["x-ms-blob-type"] = "BlockBlob"
                 };
 
-                var filePath = DependencyService.Get<ITemporaryPictureStorage>().GetFullPath(nextFileName);
-                var uploadTask = _session.CreateUploadTask(request, NSUrl.FromFilename(filePath));
+                var uploadTask = _session.CreateUploadTask(request, NSUrl.FromFilename(nextFilePath));
                 uploadTask.Resume();
             }
         }

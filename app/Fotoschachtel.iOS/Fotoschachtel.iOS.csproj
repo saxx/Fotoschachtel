@@ -148,7 +148,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="TemporaryPictureStorage.cs" />
     <Compile Include="UploaderDelegate.cs" />
     <Compile Include="UploaderTask.cs" />
     <None Include="app.config" />

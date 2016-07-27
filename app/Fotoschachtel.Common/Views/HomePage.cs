@@ -319,12 +319,8 @@ namespace Fotoschachtel.Common.Views
             }
             _uploadsPending++;
             UpdateActivityIndicator();
-
-            var fileName = Guid.NewGuid() + ".jpg";
-            DependencyService.Get<ITemporaryPictureStorage>().Save(fileName, file.GetStream());
-            file.Dispose();
-
-            Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { fileName }).ToArray();
+            
+            Settings.UploadQueue = Settings.UploadQueue.Concat(new[] { file.Path }).ToArray();
             MessagingCenter.Send(new StartUploadMessage(), "StartUpload");
         }
         #endregion

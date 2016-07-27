@@ -40,7 +40,6 @@
     <Compile Include="Controls\Controls.cs" />
     <Compile Include="Controls\Fonts.cs" />
     <Compile Include="Extensions\NumericExtensions.cs" />
-    <Compile Include="ITemporaryPictureStorage.cs" />
     <Compile Include="Views\GalleryPage.cs" />
     <Compile Include="Views\HomePage.cs" />
     <Compile Include="Messages.cs" />

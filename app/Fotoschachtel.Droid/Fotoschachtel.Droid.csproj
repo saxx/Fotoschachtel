@@ -209,7 +209,6 @@
     </AndroidResource>
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="SplashActivity.cs" />
-    <Compile Include="TemporaryPictureStorage.cs" />
     <Compile Include="UploaderService.cs" />
   </ItemGroup>
   <ItemGroup>
