@@ -150,7 +150,7 @@ namespace Fotoschachtel.Common.Views
                     // build the image
                     var image = new Image
                     {
-                        MinimumHeightRequest = 120,
+                        HeightRequest = Device.OnPlatform(100, 100, 150),
                         Aspect = Aspect.AspectFill,
                         Source = new UriImageSource
                         {
