@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ModernHttpClient;
+using Fotoschachtel.Common.ViewModels;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 
@@ -92,6 +93,27 @@ namespace Fotoschachtel.Common
             }
         }
 
+        public static Dictionary<string, IEnumerable<PicturesViewModel.Picture>> PicturesCache
+        {
+            get
+            {
+                var json = AppSettings.GetValueOrDefault("PicturesCache", "{}");
+                try
+                {
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<PicturesViewModel.Picture>>>(json);
+                }
+                catch
+                {
+                    return new Dictionary<string, IEnumerable<PicturesViewModel.Picture>>();
+                }
+            }
+            set
+            {
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+                AppSettings.AddOrUpdateValue("PicturesCache", json);
+            }
+        }
+
 
         public static async Task<SasToken> GetSasToken()
         {
@@ -114,7 +136,7 @@ namespace Fotoschachtel.Common
 
         private static async Task<SasToken> GetNewSasToken()
         {
-            using (var httpClient = new HttpClient(new NativeMessageHandler()))
+            using (var httpClient = new HttpClient())
             {
                 string response;
                 try

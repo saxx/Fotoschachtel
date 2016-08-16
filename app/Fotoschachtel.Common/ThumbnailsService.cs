@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ModernHttpClient;
 
 namespace Fotoschachtel.Common
 {
@@ -12,7 +11,7 @@ namespace Fotoschachtel.Common
         {
             try
             {
-                using (var httpClient = new HttpClient(new NativeMessageHandler()))
+                using (var httpClient = new HttpClient())
                 {
                     var response = await httpClient.PostAsync(Settings.ThumbnailsUri, null);
                     response.EnsureSuccessStatusCode();

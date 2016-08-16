@@ -18,7 +18,6 @@ namespace Fotoschachtel.Common
         protected override void OnResume()
         {
             MessagingCenter.Send(new StartUploadMessage(), "StartUpload");
-            ((HomePage)MainPage).Refresh(false);
         }
     }
 }

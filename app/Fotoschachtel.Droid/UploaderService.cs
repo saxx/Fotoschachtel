@@ -8,7 +8,6 @@ using Android.Content;
 using Android.OS;
 using Fotoschachtel.Common;
 using Java.Lang;
-using ModernHttpClient;
 using Xamarin.Forms;
 
 namespace Fotoschachtel.Droid
@@ -52,7 +51,7 @@ namespace Fotoschachtel.Droid
             var sasToken = await Settings.GetSasToken();
             try
             {
-                using (var httpClient = new HttpClient(new NativeMessageHandler()))
+                using (var httpClient = new HttpClient())
                 {
                     var nextFile = File.Open(nextFilePath, FileMode.Open, FileAccess.Read);
                     var content = new StreamContent(nextFile);

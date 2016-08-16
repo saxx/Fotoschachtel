@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ModernHttpClient;
 using Xamarin.Forms;
 using ZXing.Net.Mobile.Forms;
 
@@ -170,7 +169,7 @@ namespace Fotoschachtel.Common.Views
             // check if we can access a server with these new settings
             try
             {
-                using (var httpClient = new HttpClient(new NativeMessageHandler()))
+                using (var httpClient = new HttpClient())
                 {
                     var response = await httpClient.GetAsync(Settings.GetSasTokenUri(@event, password));
 

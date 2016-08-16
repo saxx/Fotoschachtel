@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using ModernHttpClient;
 
 namespace Fotoschachtel.Common.ViewModels
 {
@@ -29,7 +28,7 @@ namespace Fotoschachtel.Common.ViewModels
             string xmlString;
             try
             {
-                using (var httpClient = new HttpClient(new NativeMessageHandler()))
+                using (var httpClient = new HttpClient())
                 {
                     xmlString = await httpClient.GetStringAsync(_sasToken.SasListUrl);
                 }
@@ -51,9 +50,8 @@ namespace Fotoschachtel.Common.ViewModels
                     if (fileName.StartsWith("thumbnails-small"))
                     {
                         fileName = fileName.Substring("thumbnails-small/".Length);
-                        pictures.Add(new Picture
+                        pictures.Add(new Picture(fileName)
                         {
-                            FileName = fileName,
                             SmallThumbnailUrl = $"{_sasToken.ContainerUrl}/thumbnails-small/{fileName}{_sasToken.SasQueryString}",
                             MediumThumbnailUrl = $"{_sasToken.ContainerUrl}/thumbnails-medium/{fileName}{_sasToken.SasQueryString}",
                             DateTime = DateTime.Parse(blobNode.Element("Properties").Element("Last-Modified").Value)
@@ -74,10 +72,32 @@ namespace Fotoschachtel.Common.ViewModels
 
         public class Picture
         {
-            public string FileName { get; set; }
+            public Picture(string fileName)
+            {
+                FileName = fileName;
+            }
+
+
+            public string FileName { get; }
             public string SmallThumbnailUrl { get; set; }
             public string MediumThumbnailUrl { get; set; }
             public DateTime DateTime { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as Picture;
+                if (other == null)
+                {
+                    return false;
+                }
+                return other.FileName == FileName;
+            }
+
+            public override int GetHashCode()
+            {
+                return FileName.GetHashCode();
+            }
         }
     }
 }
+

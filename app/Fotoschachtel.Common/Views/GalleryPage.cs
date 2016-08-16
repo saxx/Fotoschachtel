@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fotoschachtel.Common.ViewModels;
 using Xamarin.Forms;
@@ -7,50 +8,53 @@ namespace Fotoschachtel.Common.Views
 {
     public class GalleryPage : CarouselPage
     {
-        public void Build(PicturesViewModel viewModel)
+        public async Task Build(IEnumerable<PicturesViewModel.Picture> pictures)
         {
-            Children.Clear();
-
-            foreach (var picture in viewModel.Pictures)
+            await Task.Run(() =>
             {
-                var page = new ContentPage
-                {
-                    BackgroundColor = Color.Black,
-                    Padding = new Thickness(0)
-                };
+                Children.Clear();
 
-                var layout = new AbsoluteLayout();
-                var imageContainer = new PinchToZoomContainer();
-
-                var image = new Image
+                foreach (var picture in pictures)
                 {
-                    Source = new UriImageSource
+                    var page = new ContentPage
                     {
-                        CacheValidity = TimeSpan.FromDays(30),
-                        Uri = new Uri(picture.MediumThumbnailUrl)
-                    }
-                };
-                var label = new Label
-                {
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    Text = GetRelativeDateText(picture.DateTime),
-                    BackgroundColor = Color.Black,
-                    TextColor = Color.White
-                };
-                var closeButton = Controls.Image("cancel.png", 25, async clickedButton =>
-                {
-                    await Navigation.PopModalAsync(true);
-                });
+                        BackgroundColor = Color.Black,
+                        Padding = new Thickness(0)
+                    };
 
-                imageContainer.Content = image;
-                layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
-                layout.Children.Add(label, new Rectangle(0, 0, 1, 25), AbsoluteLayoutFlags.WidthProportional);
-                layout.Children.Add(closeButton, new Rectangle(1, 0, 25, 25), AbsoluteLayoutFlags.XProportional);
+                    var layout = new AbsoluteLayout();
+                    var imageContainer = new PinchToZoomContainer();
 
-                page.Content = layout;
-                Children.Add(page);
-            }
+                    var image = new Image
+                    {
+                        Source = new UriImageSource
+                        {
+                            CacheValidity = TimeSpan.FromDays(30),
+                            Uri = new Uri(picture.MediumThumbnailUrl)
+                        }
+                    };
+                    var label = new Label
+                    {
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        VerticalTextAlignment = TextAlignment.Center,
+                        Text = GetRelativeDateText(picture.DateTime),
+                        BackgroundColor = Color.Black,
+                        TextColor = Color.White
+                    };
+                    var closeButton = Controls.Image("cancel.png", 25, async clickedButton =>
+                    {
+                        await Navigation.PopModalAsync(true);
+                    });
+
+                    imageContainer.Content = image;
+                    layout.Children.Add(imageContainer, new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.SizeProportional);
+                    layout.Children.Add(label, new Rectangle(0, 0, 1, 25), AbsoluteLayoutFlags.WidthProportional);
+                    layout.Children.Add(closeButton, new Rectangle(1, 0, 25, 25), AbsoluteLayoutFlags.XProportional);
+
+                    page.Content = layout;
+                    Children.Add(page);
+                }
+            });
         }
 
 
