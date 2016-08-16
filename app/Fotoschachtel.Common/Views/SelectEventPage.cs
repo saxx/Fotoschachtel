@@ -84,7 +84,14 @@ namespace Fotoschachtel.Common.Views
                 VerticalOptions = LayoutOptions.StartAndExpand
             };
 
-            #region Logo
+            #region Cancel button & Logo
+
+            var cancelButton = Controls.Image("Fotoschachtel.Common.Images.back.png", 40, 40, async image =>
+            {
+                await Navigation.PopModalAsync();
+            });
+            cancelButton.HorizontalOptions = LayoutOptions.Start;
+            layout.Children.Add(cancelButton);
 
             var logo = Controls.Image("logo", 100);
             logo.HorizontalOptions = LayoutOptions.Center;
@@ -92,7 +99,9 @@ namespace Fotoschachtel.Common.Views
 
             #endregion
 
-            #region Input fields
+            #region Existing event
+
+            layout.Children.Add(Controls.Label("Wenn du den Namen und das Passwort eines Events kennst, kannst du sie hier eingeben, um Fotoschachtel mit diesem Event zu verknüpfen."));
 
             var eventEntry = Controls.Entry(Settings.Event);
             var passwordEntry = Controls.Password("");
@@ -116,11 +125,8 @@ namespace Fotoschachtel.Common.Views
                     passwordEntry
                 }
             });
-            #endregion
 
-            #region Buttons
-
-            var okButton = Controls.Image("save.png", 40, async image =>
+            var okButton = Controls.Button("Mit Event verknüpfen", async button =>
             {
                 if (await Save(eventEntry.Text, passwordEntry.Text))
                 {
@@ -128,25 +134,15 @@ namespace Fotoschachtel.Common.Views
                     await Navigation.PopModalAsync();
                 }
             });
-            okButton.HorizontalOptions = LayoutOptions.End;
-            var cancelButton = Controls.Image("cancel.png", 40, async image =>
-            {
-                await Navigation.PopModalAsync();
-            });
-            cancelButton.HorizontalOptions = LayoutOptions.StartAndExpand;
-
-            layout.Children.Add(new StackLayout
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Orientation = StackOrientation.Horizontal,
-                Children = { cancelButton, okButton },
-            });
+            layout.Children.Add(okButton);
 
             #endregion
 
             #region New event button
 
             layout.Children.Add(Controls.Separator());
+            layout.Children.Add(Controls.Separator());
+            layout.Children.Add(Controls.Label("Du kannst auch ein neues Event erstellen, für das du den Namen und das Passwort wählen kannst."));
             var newEventButton = Controls.Button("Neues Event anlegen", button =>
             {
                 Device.OpenUri(new Uri("https://fotoschachtel.sachsenhofer.com/create-event"));

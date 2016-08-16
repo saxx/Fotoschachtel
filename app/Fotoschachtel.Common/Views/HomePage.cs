@@ -146,7 +146,7 @@ namespace Fotoschachtel.Common.Views
             // and update the grid
             await _grid.Fill(_viewModel.Pictures);
 
-            await DisplayAlert("Done", "Loaded in " + watch.ElapsedMilliseconds + "ms", "OK");
+            // await DisplayAlert("Done", "Loaded in " + watch.ElapsedMilliseconds + "ms", "OK");
         }
 
 
