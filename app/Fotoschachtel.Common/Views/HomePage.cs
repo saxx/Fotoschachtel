@@ -188,10 +188,13 @@ namespace Fotoschachtel.Common.Views
             });
             cameraButton.IsVisible = media.IsTakePhotoSupported;
 
-            MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", async message =>
+            MessagingCenter.Subscribe<UploadFinishedMessage>(this, "UploadFinished", message =>
             {
-                _uploadsPending--;
-                await Refresh();
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    _uploadsPending--;
+                    await Refresh();
+                });
             });
 
             layout.Children.Add(libraryButton, new Rectangle(0, 1, buttonSize, buttonSize), AbsoluteLayoutFlags.YProportional);
